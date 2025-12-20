@@ -20,12 +20,19 @@ body {
 /* Narrow readable column */
 .content, .page-columns, .page-layout-full .page-columns {
   max-width: var(--sa-max-width);
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Center the main content text (as requested) */
+.content,
+.page-columns,
+.page-layout-full .page-columns,
 main.content,
 #quarto-content,
-.quarto-title-block {
+.quarto-title-block,
+.quarto-title-banner,
+.quarto-title {
   text-align: center;
 }
 
@@ -69,6 +76,7 @@ main.content,
 .quarto-listing-table td,
 .quarto-listing-table th {
   border-top: 1px solid var(--sa-border) !important;
+  text-align: center;
 }
 
 /* Make dates muted if Quarto emits date in its own column */

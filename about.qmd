@@ -2,5 +2,11 @@
 title: About
 ---
 
-I'm Sergey A.
+I’m Sergey A.
+
+My interests include machine learning, optimization, and representation learning.
+
+- Email: (add)
+- GitHub: [labofdoubt](https://github.com/labofdoubt)
+- Scholar: (add)
 

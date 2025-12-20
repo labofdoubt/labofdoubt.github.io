@@ -1,0 +1,16 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+const BASE_URL = import.meta.env.BASE_URL;
+---
+
+<BaseLayout title="Home">
+  <h1>SA</h1>
+  <p>
+    Research notes on machine learning, math, and experiments.
+  </p>
+  <p>
+    <a href={`${BASE_URL}blog/`}>Read the blog</a>
+  </p>
+</BaseLayout>
+
+

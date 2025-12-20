@@ -1,0 +1,31 @@
+---
+import "../styles/global.css";
+
+const { title } = Astro.props;
+const BASE_URL = import.meta.env.BASE_URL; // "/" in dev; "/astro/" when built for Pages subpath
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title ? `${title} · SA` : "SA"}</title>
+    <link rel="stylesheet" href="katex/dist/katex.min.css" />
+  </head>
+  <body>
+    <header class="site">
+      <nav class="site">
+        <a class="brand" href={BASE_URL}>SA</a>
+        <div class="nav-right">
+          <a href={`${BASE_URL}blog/`}>Blog</a>
+          <a href={`${BASE_URL}about/`}>About</a>
+        </div>
+      </nav>
+    </header>
+    <main>
+      <slot />
+    </main>
+  </body>
+</html>
+
+

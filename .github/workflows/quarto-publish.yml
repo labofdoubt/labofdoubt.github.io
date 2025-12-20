@@ -27,6 +27,27 @@ jobs:
       - name: Render site
         run: quarto render
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Astro deps
+        working-directory: astro
+        run: npm install --no-audit --no-fund
+
+      - name: Build Astro (deploy under /astro/)
+        working-directory: astro
+        env:
+          ASTRO_BASE: /astro
+        run: npm run build
+
+      - name: Copy Astro into Quarto output
+        run: |
+          rm -rf _site/astro
+          mkdir -p _site/astro
+          cp -R astro/dist/* _site/astro/
+
       - name: Disable Jekyll
         run: touch _site/.nojekyll
 

@@ -39,14 +39,20 @@ jobs:
       - name: Build Astro (deploy under /astro/)
         working-directory: astro
         env:
-          ASTRO_BASE: /astro
+          ASTRO_BASE: /astro/
         run: npm run build
+
+      - name: Debug Astro dist
+        run: |
+          echo "Astro dist contents:"
+          ls -la astro/dist || true
 
       - name: Copy Astro into Quarto output
         run: |
           rm -rf _site/astro
           mkdir -p _site/astro
-          cp -R astro/dist/* _site/astro/
+          # Use '/.' so this doesn't fail if the directory is empty and copies dotfiles too.
+          cp -R astro/dist/. _site/astro/
 
       - name: Disable Jekyll
         run: touch _site/.nojekyll

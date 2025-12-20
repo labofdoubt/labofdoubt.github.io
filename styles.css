@@ -4,11 +4,15 @@
   --sa-muted: #666;
   --sa-border: rgba(0, 0, 0, 0.12);
   --sa-link: #111;
+  --sa-bg: #ffffff;
 }
 
 /* Overall typography */
 body {
   color: var(--sa-text);
+  background: var(--sa-bg);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica,
+    Arial, "Apple Color Emoji", "Segoe UI Emoji";
   font-feature-settings: "kern" 1, "liga" 1;
   line-height: 1.65;
 }
@@ -18,13 +22,23 @@ body {
   max-width: var(--sa-max-width);
 }
 
+/* Center the main content text (as requested) */
+main.content,
+#quarto-content,
+.quarto-title-block {
+  text-align: center;
+}
+
 /* Header / navbar: minimal, no background blocks */
 .navbar {
+  background-color: #fff !important;
   border-bottom: 1px solid var(--sa-border);
 }
 
 .navbar .navbar-container {
   max-width: var(--sa-max-width);
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .navbar-brand {
@@ -41,8 +55,15 @@ body {
 }
 
 /* Blog listing: keep it clean */
+.quarto-listing .quarto-listing-sort,
+.quarto-listing .quarto-listing-filters {
+  display: none !important; /* fallback in case YAML options aren't supported */
+}
+
 .quarto-listing-table table {
   margin-top: 1rem;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .quarto-listing-table td,

@@ -27,6 +27,9 @@ jobs:
       - name: Render site
         run: quarto render
 
+      - name: Disable Jekyll
+        run: touch _site/.nojekyll
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
 

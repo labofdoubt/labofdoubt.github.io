@@ -1,0 +1,9 @@
+exclude:
+  # Prevent the default GitHub Pages Jekyll build from trying to parse Astro files
+  # (it treats `---` frontmatter blocks as YAML and fails on JS frontmatter).
+  - astro
+  - .github
+  - node_modules
+  - README.md
+
+

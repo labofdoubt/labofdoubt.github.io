@@ -1,0 +1,73 @@
+:root {
+  --sa-max-width: 780px;
+  --sa-text: #111;
+  --sa-muted: #666;
+  --sa-border: rgba(0, 0, 0, 0.12);
+  --sa-link: #111;
+}
+
+/* Overall typography */
+body {
+  color: var(--sa-text);
+  font-feature-settings: "kern" 1, "liga" 1;
+  line-height: 1.65;
+}
+
+/* Narrow readable column */
+.content, .page-columns, .page-layout-full .page-columns {
+  max-width: var(--sa-max-width);
+}
+
+/* Header / navbar: minimal, no background blocks */
+.navbar {
+  border-bottom: 1px solid var(--sa-border);
+}
+
+.navbar .navbar-container {
+  max-width: var(--sa-max-width);
+}
+
+.navbar-brand {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.navbar a {
+  color: var(--sa-link) !important;
+}
+
+.navbar a:hover {
+  text-decoration: underline;
+}
+
+/* Blog listing: keep it clean */
+.quarto-listing-table table {
+  margin-top: 1rem;
+}
+
+.quarto-listing-table td,
+.quarto-listing-table th {
+  border-top: 1px solid var(--sa-border) !important;
+}
+
+/* Make dates muted if Quarto emits date in its own column */
+.quarto-listing-table td:first-child {
+  color: var(--sa-muted);
+  white-space: nowrap;
+}
+
+/* General link style */
+a {
+  color: var(--sa-link);
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Images */
+img {
+  max-width: 100%;
+  height: auto;
+}
+

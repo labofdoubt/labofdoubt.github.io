@@ -1,0 +1,12 @@
+---
+title: Blog
+listing:
+  contents: posts
+  sort: "date desc"
+  type: table
+  fields: [date, title]
+  page-size: 50
+---
+
+Welcome. This is my research blog: notes on machine learning, math, and experiments.
+

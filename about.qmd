@@ -1,0 +1,12 @@
+---
+title: About
+---
+
+I’m Sergey Alekseev.
+
+My interests include machine learning, optimization, and representation learning.
+
+- Email: (add)
+- GitHub: [labofdoubt](https://github.com/labofdoubt)
+- Scholar: (add)
+

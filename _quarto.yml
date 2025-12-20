@@ -1,0 +1,34 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "SA"
+  navbar:
+    left:
+      - text: Blog
+        href: index.qmd
+      - text: About
+        href: about.qmd
+
+format:
+  html:
+    lang: en
+    theme: default
+    css: styles.css
+    toc: false
+    anchor-sections: true
+    link-external-newwindow: true
+    math: mathjax
+    metadata:
+      # MathJax configuration for maximum LaTeX compatibility
+      # (Quarto will pass this through to the HTML template.)
+      mathjax:
+        tex:
+          inlineMath:
+            - ["\\(", "\\)"]
+            - ["$", "$"]
+          displayMath:
+            - ["\\[", "\\]"]
+            - ["$$", "$$"]
+

@@ -5,6 +5,7 @@
   --muted: #475569;
   --border: rgba(15, 23, 42, 0.12);
   --accent: #0f172a;
+  --hover: #64748b;
 }
 
 * {
@@ -37,6 +38,14 @@ a:hover {
   text-decoration: underline;
 }
 
+/* Home title ("SA" in the main panel) */
+.home-title {
+  font-size: clamp(3.25rem, 7vw, 4.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin: 0 0 0.75rem 0;
+}
+
 /* Simple modern header */
 header.site {
   position: sticky;
@@ -64,6 +73,12 @@ nav.site {
   display: flex;
   gap: 1.25rem;
   align-items: center;
+}
+
+/* Navbar hover: grey, no underline (SA / Blog / About) */
+nav.site a:hover {
+  color: var(--hover);
+  text-decoration: none;
 }
 
 /* Blog list */

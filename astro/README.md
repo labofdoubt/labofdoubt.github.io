@@ -20,12 +20,8 @@ npm run preview
 
 ## Notes on deployment
 
-- This repo deploys the **Quarto** site to GitHub Pages at the root: `/`.
-- The GitHub Pages workflow also builds this Astro site and publishes it under: `/astro/`
-  - URL: `https://labofdoubt.github.io/astro/`
+This site deploys to GitHub Pages at:
 
-### Deploy Astro at the root instead (optional)
-
-If you decide you want Astro to replace Quarto at `/`, we can switch the workflow to upload `astro/dist` directly (and set `ASTRO_BASE=/`).
+- `https://labofdoubt.github.io/`
 
 

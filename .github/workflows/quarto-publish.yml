@@ -1,4 +1,4 @@
-name: Publish Quarto site to GitHub Pages
+name: Deploy Astro site to GitHub Pages
 
 on:
   push:
@@ -21,12 +21,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Quarto
-        uses: quarto-dev/quarto-actions/setup@v2
-
-      - name: Render site
-        run: quarto render
-
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
@@ -36,26 +30,14 @@ jobs:
         working-directory: astro
         run: npm install --no-audit --no-fund
 
-      - name: Build Astro (deploy under /astro/)
+      - name: Build Astro (deploy at /)
         working-directory: astro
         env:
-          ASTRO_BASE: /astro/
+          ASTRO_BASE: /
         run: npm run build
 
-      - name: Debug Astro dist
-        run: |
-          echo "Astro dist contents:"
-          ls -la astro/dist || true
-
-      - name: Copy Astro into Quarto output
-        run: |
-          rm -rf _site/astro
-          mkdir -p _site/astro
-          # Use '/.' so this doesn't fail if the directory is empty and copies dotfiles too.
-          cp -R astro/dist/. _site/astro/
-
       - name: Disable Jekyll
-        run: touch _site/.nojekyll
+        run: touch astro/dist/.nojekyll
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
@@ -63,7 +45,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: _site
+          path: astro/dist
 
   deploy:
     needs: build

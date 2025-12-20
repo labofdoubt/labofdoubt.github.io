@@ -14,7 +14,8 @@ export default defineConfig({
   integrations: [mdx(), sitemap()],
   markdown: {
     remarkPlugins: [remarkMath],
-    rehypePlugins: [rehypeKatex],
+    // Render KaTeX as HTML only (prevents “double rendering” in some browsers)
+    rehypePlugins: [[rehypeKatex, { output: "html" }]],
   },
 });
 

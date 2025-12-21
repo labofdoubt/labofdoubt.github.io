@@ -14,6 +14,6 @@ npm run dev
 
 ## Deploy
 
-Pushing to `main` triggers the GitHub Actions workflow (`.github/workflows/quarto-publish.yml`) which builds Astro and deploys `astro/dist` to GitHub Pages.
+Pushing to `main` triggers the GitHub Actions workflow (`.github/workflows/deploy-astro.yml`) which builds Astro and deploys `astro/dist` to GitHub Pages.
 
 

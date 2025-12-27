@@ -103,6 +103,27 @@ nav.site a:hover {
   font-size: 0.95rem;
 }
 
+/* Figures (Markdown/HTML <figure>) */
+figure {
+  margin: 1.5rem auto;
+}
+
+figure > img {
+  display: block;
+  width: 100%;
+  max-width: 620px; /* make figures less wide */
+  height: auto;
+  margin: 0 auto;
+}
+
+figure > figcaption {
+  max-width: 620px;
+  margin: 0.6rem auto 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  text-align: center;
+}
+
 /* KaTeX base sizing */
 .katex {
   font-size: 1.05em;

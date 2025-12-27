@@ -111,13 +111,13 @@ figure {
 figure > img {
   display: block;
   width: 100%;
-  max-width: 640px; /* make figures less wide */
+  max-width: 620px; /* make figures less wide */
   height: auto;
   margin: 0 auto;
 }
 
 figure > figcaption {
-  max-width: 640px;
+  max-width: 620px;
   margin: 0.6rem auto 0;
   color: var(--muted);
   font-size: 0.95rem;

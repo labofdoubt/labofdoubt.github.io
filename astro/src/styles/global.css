@@ -124,6 +124,20 @@ figure > figcaption {
   text-align: center;
 }
 
+/* Wide figures: allow the figure to extend beyond the text column */
+figure.wide {
+  width: min(740px, calc(100vw - 2.5rem));
+  margin: 1.75rem auto;
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
+figure.wide > img,
+figure.wide > figcaption {
+  max-width: none;
+  width: 100%;
+}
+
 /* KaTeX base sizing */
 .katex {
   font-size: 1.05em;

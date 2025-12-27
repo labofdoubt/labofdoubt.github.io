@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
+  <rect x="0" y="0" width="960" height="540" fill="#ffffff"/>
+  <rect x="60" y="60" width="840" height="420" rx="18" fill="#f8fafc" stroke="#cbd5e1" stroke-width="3"/>
+  <text x="480" y="250" text-anchor="middle" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" font-size="28" fill="#0f172a">
+    Placeholder figure
+  </text>
+  <text x="480" y="292" text-anchor="middle" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" font-size="18" fill="#475569">
+    Replace astro/public/figures/alpha-transition.svg with your real plot
+  </text>
+</svg>
+
+

@@ -1,6 +1,5 @@
 ---
 import "../styles/global.css";
-import "katex/dist/katex.min.css";
 
 const { title } = Astro.props;
 const BASE_URL = import.meta.env.BASE_URL; // "/" in dev; "/astro/" when built for Pages subpath
@@ -11,6 +10,22 @@ const BASE_URL = import.meta.env.BASE_URL; // "/" in dev; "/astro/" when built f
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title ? `${title} · SA` : "SA"}</title>
+    <script>
+      window.MathJax = {
+        tex: {
+          // Support both $...$/$$...$$ and \(..\)/\[..\]
+          inlineMath: [["$", "$"], ["\\(", "\\)"]],
+          displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+          // Enable automatic numbering + \label / \eqref (AMS-style)
+          tags: "ams",
+        },
+      };
+    </script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+    ></script>
   </head>
   <body>
     <header class="site">

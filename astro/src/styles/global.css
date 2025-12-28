@@ -138,3 +138,9 @@ figure.wide > figcaption {
   width: 100%;
 }
 
+/* KaTeX base sizing */
+.katex {
+  font-size: 1.05em;
+}
+
+

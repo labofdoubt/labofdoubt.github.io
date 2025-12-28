@@ -124,6 +124,15 @@ figure > figcaption {
   text-align: center;
 }
 
+/* Caption paragraphs placed immediately after a <figure> (lets KaTeX render in captions) */
+figure + p {
+  max-width: 620px;
+  margin: 0.6rem auto 1.5rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+  text-align: center;
+}
+
 /* Wide figures: allow the figure to extend beyond the text column */
 figure.wide {
   width: min(740px, calc(100vw - 2.5rem));
@@ -136,6 +145,10 @@ figure.wide > img,
 figure.wide > figcaption {
   max-width: none;
   width: 100%;
+}
+
+figure.wide + p {
+  max-width: min(740px, calc(100vw - 2.5rem));
 }
 
 /* KaTeX base sizing */

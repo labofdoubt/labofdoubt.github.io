@@ -48,8 +48,14 @@ main a[href^="#eq-"],
 main a[href^="#eq:"],
 main a[href^="#ref-"],
 main a[href^="#cite-"],
+main a[href*="#ref-"],
+main a[href*="#cite-"],
+main a[href^="#bib-"],
+main a[href*="#bib-"],
 main a[role="doc-biblioref"],
-main a.citation {
+main a.citation,
+main .csl-citation a,
+main span.citation a {
   color: var(--ref-link);
   text-decoration: none;
 }
@@ -59,8 +65,14 @@ main a[href^="#eq-"]:hover,
 main a[href^="#eq:"]:hover,
 main a[href^="#ref-"]:hover,
 main a[href^="#cite-"]:hover,
+main a[href*="#ref-"]:hover,
+main a[href*="#cite-"]:hover,
+main a[href^="#bib-"]:hover,
+main a[href*="#bib-"]:hover,
 main a[role="doc-biblioref"]:hover,
-main a.citation:hover {
+main a.citation:hover,
+main .csl-citation a:hover,
+main span.citation a:hover {
   color: var(--ref-link-hover);
   text-decoration: none;
 }

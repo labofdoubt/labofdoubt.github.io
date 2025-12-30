@@ -283,34 +283,40 @@ nav.site a:hover {
 }
 
 /* KaTeX display math + equation numbers (tags)
-   Goal: show the number at the right edge of the prose column (no overlay).
-   Approach: position the tag at the right edge, and reserve space on the right
-   inside the scrollable math container. */
+   Goal:
+   - Number aligned at the right edge of the prose/text column
+   - No overlap for wide equations
+   Approach: split into two areas:
+   - left: scrollable equation
+   - right: fixed-width number column (aligned right) */
 .prose .katex-display {
-  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
   max-width: 100%;
-  overflow: visible;
   padding: 0.25rem 0;
 }
 
-/* Scroll long equations horizontally, but keep room for the equation number */
+/* Scroll long equations horizontally without affecting the page */
 .prose .katex-display > .katex {
-  display: block;
-  max-width: 100%;
+  flex: 1 1 auto;
+  min-width: 0; /* required for flex children to actually be scrollable */
   overflow-x: auto;
   overflow-y: hidden;
-  padding: 0.25rem 3.5em 0.25rem 0; /* reserve room for (n) at right edge */
+  padding: 0.25rem 0;
 }
 
-/* Equation number (tag) sits at the right edge of the prose column */
+/* Equation number (tag): fixed on the right, black, and aligned to column end */
+.prose .katex-display > .tag,
 .prose .katex-display .tag {
-  position: absolute !important;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  float: none !important;
+  flex: 0 0 auto;
+  min-width: 3.25em; /* gives consistent right margin alignment */
+  text-align: right;
   white-space: nowrap;
-  color: var(--muted);
+  color: var(--text);
+  float: none !important;
+  position: static !important;
+  transform: none !important;
   background: transparent;
   padding: 0;
   margin: 0;

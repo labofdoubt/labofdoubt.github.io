@@ -283,16 +283,26 @@ nav.site a:hover {
   text-align: left;
 }
 
-/* KaTeX display math + equation numbers (tags)
-   Minimal behavior:
-   - The equation number sits at the right edge of the prose/text column.
-   - The equation itself scrolls horizontally if it's too wide.
-   - The equation never renders underneath the number (reserved right padding). */
+/* KaTeX display math + equation numbering
+   Why this exists:
+   - KaTeX's built-in equation tags can overlap/clamp when we also add horizontal scrolling.
+   - Positioning the built-in `.tag` can be brittle because it lives inside the scroll container.
+   Solution:
+   - Hide KaTeX's internal tag and render a clean right-margin number via CSS counters.
+   Notes:
+   - This numbers display equations in document order. If you include *unnumbered* display math,
+     it will still be numbered. (In this blog, you use \begin{equation} for numbered displays.) */
+.prose {
+  counter-reset: eq;
+}
+
 .prose .katex-display {
+  display: block;
   position: relative;
   max-width: 100%;
   width: 100%;
   padding: 0.25rem 0;
+  counter-increment: eq;
 }
 
 .prose .katex-display > .katex {
@@ -301,22 +311,23 @@ nav.site a:hover {
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
-  padding: 0.25rem calc(4.25em + var(--eq-tag-outset)) 0.25rem 0; /* reserved space for (n) */
+  padding: 0.25rem calc(4.5em + var(--eq-tag-outset)) 0.25rem 0; /* reserve space for number */
 }
 
+/* Hide KaTeX's own tag (we draw our own) */
 .prose .katex-display .tag {
-  position: absolute !important;
-  right: 0 !important;
+  display: none !important;
+}
+
+/* Our equation number, aligned to the end of the prose column */
+.prose .katex-display::after {
+  content: "(" counter(eq) ")";
+  position: absolute;
+  right: calc(-1 * var(--eq-tag-outset));
   top: 50%;
-  /* Push into the right gutter by a controllable amount */
-  transform: translateX(var(--eq-tag-outset)) translateY(-50%) !important;
-  float: none !important;
-  white-space: nowrap;
-  text-align: right;
+  transform: translateY(-50%);
   color: var(--text);
-  background: transparent;
-  padding: 0;
-  margin: 0;
+  white-space: nowrap;
 }
 
 /* Figures (Markdown/HTML <figure>) */

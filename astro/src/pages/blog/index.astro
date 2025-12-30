@@ -22,7 +22,7 @@ const posts = (await getCollection("blog")).sort(
         <h2 style="margin: 0.25rem 0 0.2rem 0;">
           <a href={`${BASE_URL}blog/${post.slug}/`}>{post.data.title}</a>
         </h2>
-        {post.data.description && <p class="post-meta">{post.data.description}</p>}
+        {post.data.description && <p class="post-desc">{post.data.description}</p>}
       </article>
     ))}
   </section>

@@ -103,6 +103,13 @@ nav.site a:hover {
   font-size: 0.95rem;
 }
 
+.post-desc {
+  margin: 0.4rem 0 0;
+  color: var(--text);
+  opacity: 0.9;
+  font-size: 0.98rem;
+}
+
 /* Figures (Markdown/HTML <figure>) */
 figure {
   margin: 1.5rem auto;

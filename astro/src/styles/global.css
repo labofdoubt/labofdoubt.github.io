@@ -306,9 +306,10 @@ nav.site a:hover {
 
 .prose .katex-display .tag {
   position: absolute !important;
-  right: calc(-1 * var(--eq-tag-outset));
+  right: 0 !important;
   top: 50%;
-  transform: translateY(-50%) !important;
+  /* Push into the right gutter by a controllable amount */
+  transform: translateX(var(--eq-tag-outset)) translateY(-50%) !important;
   float: none !important;
   white-space: nowrap;
   text-align: right;

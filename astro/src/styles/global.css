@@ -322,7 +322,7 @@ nav.site a:hover {
   margin: 0.6rem auto 0;
   color: var(--muted);
   font-size: 0.95rem;
-  text-align: center;
+  text-align: left;
 }
 
 /* Caption paragraphs immediately after a figure:
@@ -332,7 +332,7 @@ nav.site a:hover {
   margin: 0.6rem auto 1.5rem;
   color: var(--muted);
   font-size: 0.95rem;
-  text-align: center;
+  text-align: left;
 }
 
 /* Wide figures: can exceed the prose measure but stay within viewport gutters */

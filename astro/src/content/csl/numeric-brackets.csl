@@ -31,7 +31,8 @@
         <date variable="issued">
           <date-part name="year"/>
         </date>
-        <text variable="URL"/>
+        <!-- In HTML output this should render as a clickable hyperlink -->
+        <text variable="URL" prefix="Available at: "/>
       </group>
     </layout>
   </bibliography>

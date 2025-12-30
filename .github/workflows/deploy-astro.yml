@@ -36,6 +36,12 @@ jobs:
           ASTRO_BASE: /
         run: npm run build
 
+      - name: Verify build output
+        run: |
+          echo "Listing astro/dist:"
+          ls -la astro/dist
+          test -f astro/dist/index.html
+
       - name: Disable Jekyll
         run: touch astro/dist/.nojekyll
 

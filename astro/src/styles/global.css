@@ -295,39 +295,31 @@ nav.site a:hover {
   width: 100%;
   position: relative;
   padding: 0.25rem 0;
-  text-align: center;
 }
 
 /* Scroll long equations horizontally without affecting the page.
    Reserve room on the right for the equation number. */
 .prose .katex-display > .katex {
-  display: inline-block;
-  text-align: left;
+  display: block;
   overflow-x: auto;
   overflow-y: hidden;
   max-width: 100%;
-  padding: 0.25rem 4.25em 0.25rem 0;
-  scrollbar-gutter: stable;
+  padding: 0.25rem 3.75em 0.25rem 0;
 }
 
 /* Equation number (tag): keep it at the right edge of the prose column */
 .prose .katex-display .tag {
   position: absolute !important;
-  right: 0 !important;
-  top: 0 !important;
-  bottom: 0 !important;
-  transform: none !important;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%) !important;
   text-align: right;
   white-space: nowrap;
   color: var(--text);
   float: none !important;
-  background: var(--bg);
-  padding: 0 0 0 0.5em;
-  margin: 0 !important;
-  z-index: 1;
+  background: transparent;
+  padding: 0;
+  margin: 0;
 }
 
 /* Figures (Markdown/HTML <figure>) */
@@ -376,3 +368,5 @@ nav.site a:hover {
 .katex {
   font-size: 1.05em;
 }
+
+

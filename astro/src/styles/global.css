@@ -4,7 +4,7 @@
   --gutter: clamp(1rem, 4vw, 1.5rem);
   --measure: 65ch; /* target readable line length */
   --wide-max: 1100px;
-  --figure-wide: calc(var(--measure) + 10ch); /* slightly wider than the text column */
+  --figure-wide: calc(var(--measure) + 5ch); /* slightly wider than the text column */
   /* (KaTeX equation-number positioning is left to KaTeX defaults) */
   --bg: #ffffff;
   --text: #0f172a;

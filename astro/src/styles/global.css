@@ -283,64 +283,38 @@ nav.site a:hover {
 }
 
 /* KaTeX display math + equation numbers (tags)
-   Fix:
-   - Prevent equation numbers from overlaying wide equations.
-   Strategy:
-   - Use a 2-column grid (equation | number).
-   - Additionally reserve space inside the scrollable equation area as a safety net
-     in case KaTeX's tag ends up positioned/stacked unexpectedly. */
+   Minimal behavior:
+   - The equation number sits at the right edge of the prose/text column.
+   - The equation itself scrolls horizontally if it's too wide.
+   - The equation never renders underneath the number (reserved right padding). */
 .prose .katex-display {
+  position: relative;
   max-width: 100%;
   width: 100%;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  column-gap: 0.75rem;
   padding: 0.25rem 0;
-  position: relative;
 }
 
-/* Scroll long equations horizontally without affecting the page.
-   Reserve room on the right so the number never covers content. */
 .prose .katex-display > .katex {
-  grid-column: 1;
-  min-width: 0; /* critical for overflow-x inside grid */
   display: block;
+  max-width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
-  padding: 0.25rem 5.5em 0.25rem 0; /* reserved tag gutter */
+  padding: 0.25rem 4.25em 0.25rem 0; /* reserved space for (n) */
 }
 
-/* Equation number (tag) on the right edge */
 .prose .katex-display .tag {
-  grid-column: 2;
-  justify-self: end;
-  align-self: center;
-  position: static !important;
-  transform: none !important;
+  position: absolute !important;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%) !important;
   float: none !important;
-  text-align: right;
   white-space: nowrap;
+  text-align: right;
+  color: var(--text);
   background: transparent;
   padding: 0;
   margin: 0;
-}
-
-/* If KaTeX emits left equation numbers (leqno), flip columns and reserve space on the left */
-.prose .katex-display.leqno {
-  grid-template-columns: auto minmax(0, 1fr);
-}
-
-.prose .katex-display.leqno > .katex {
-  grid-column: 2;
-  padding: 0.25rem 0 0.25rem 5.5em; /* reserved tag gutter (left) */
-}
-
-.prose .katex-display.leqno .tag {
-  grid-column: 1;
-  justify-self: start;
-  text-align: left;
 }
 
 /* Figures (Markdown/HTML <figure>) */

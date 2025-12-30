@@ -284,62 +284,50 @@ nav.site a:hover {
 
 /* KaTeX display math + equation numbers (tags)
    Goal:
-   - Keep equation numbers aligned to the right edge of the prose column
-   - Prevent overlap between long equations and the number
-   - Allow long equations to scroll horizontally (without page-level scrolling)
+   - Number aligned at the right edge of the prose/text column
+   - No overlap for wide equations
    Approach:
-   - Use a 2-column grid: equation (scrollable) + number (fixed)
-   - Avoid absolute positioning for tags so alignment is stable across screen sizes */
+   - keep the equation horizontally scrollable
+   - position the equation number at the right edge of the prose column
+   - reserve space on the right so the number never overlaps the equation */
 .prose .katex-display {
   max-width: 100%;
   width: 100%;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  column-gap: 0.75rem;
-  padding: 0.25rem 0;
   position: relative;
+  padding: 0.25rem 0;
+  text-align: center;
 }
 
-/* Scroll long equations horizontally without affecting the page */
+/* Scroll long equations horizontally without affecting the page.
+   Reserve room on the right for the equation number. */
 .prose .katex-display > .katex {
-  grid-column: 1;
-  min-width: 0; /* critical: allow the grid item to shrink so overflow-x works */
-  display: block;
+  display: inline-block;
+  text-align: left;
   overflow-x: auto;
   overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  padding: 0.25rem 0;
+  max-width: 100%;
+  padding: 0.25rem 4.25em 0.25rem 0;
+  scrollbar-gutter: stable;
 }
 
-/* Equation number (tag) on the right */
-.prose .katex-display > .tag {
-  grid-column: 2;
-  justify-self: end;
-  align-self: center;
-  position: static !important;
+/* Equation number (tag): keep it at the right edge of the prose column */
+.prose .katex-display .tag {
+  position: absolute !important;
+  right: 0 !important;
+  top: 0 !important;
+  bottom: 0 !important;
   transform: none !important;
-  float: none !important;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   text-align: right;
   white-space: nowrap;
-  background: transparent;
-  padding: 0;
-  margin: 0;
-}
-
-/* If KaTeX emits left equation numbers (leqno), flip columns */
-.prose .katex-display.leqno {
-  grid-template-columns: auto minmax(0, 1fr);
-}
-
-.prose .katex-display.leqno > .tag {
-  grid-column: 1;
-  justify-self: start;
-  text-align: left;
-}
-
-.prose .katex-display.leqno > .katex {
-  grid-column: 2;
+  color: var(--text);
+  float: none !important;
+  background: var(--bg);
+  padding: 0 0 0 0.5em;
+  margin: 0 !important;
+  z-index: 1;
 }
 
 /* Figures (Markdown/HTML <figure>) */

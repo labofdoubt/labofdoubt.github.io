@@ -4,7 +4,7 @@
   --gutter: clamp(1rem, 4vw, 1.5rem);
   --measure: 65ch; /* target readable line length */
   --wide-max: 1100px;
-  --eq-tag-outset: 0.9rem; /* how far equation numbers sit into the right gutter */
+  --eq-tag-outset: 1.5rem; /* how far equation numbers sit into the right gutter */
   --bg: #ffffff;
   --text: #0f172a;
   --muted: #475569;

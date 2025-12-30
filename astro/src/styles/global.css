@@ -2,7 +2,7 @@
   /* Layout widths */
   --navw: 860px;
   --gutter: clamp(1rem, 4vw, 1.5rem);
-  --measure: 80ch; /* target readable line length */
+  --measure: 70ch; /* target readable line length */
   --wide-max: 1100px;
   --bg: #ffffff;
   --text: #0f172a;
@@ -282,26 +282,39 @@ nav.site a:hover {
   text-align: left;
 }
 
-/* KaTeX safety: allow horizontal scrolling for long display equations */
+/* KaTeX display math + equation numbers (tags)
+   Goal: prevent the number from overlapping the equation.
+   Approach: 2-column layout: equation (scrollable) | tag (fixed). */
 .prose .katex-display {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  column-gap: 0.75rem;
+  max-width: 100%;
+  overflow: visible;
+  padding: 0.25rem 0;
+}
+
+/* Make the equation itself horizontally scrollable if needed */
+.prose .katex-display > .katex {
+  grid-column: 1;
+  max-width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
-  max-width: 100%;
-  padding: 0.25rem 3.5em 0.25rem 0;
-  position: relative; /* ensures KaTeX equation numbers position correctly */
-}
-
-.prose .katex-display > .katex {
-  display: inline-block;
   padding: 0.25rem 0;
-  /* Let long equations define scroll width without forcing page overflow */
-  min-width: max-content;
 }
 
-/* KaTeX equation numbers (from \begin{equation}...\end{equation}) */
+/* Equation number: keep it separate and readable */
+.prose .katex-display > .tag,
 .prose .katex-display .tag {
-  background: var(--bg);
-  padding-left: 0.5em;
+  grid-column: 2;
+  position: static !important; /* override KaTeX's absolute positioning */
+  float: none !important;
+  white-space: nowrap;
+  color: var(--muted);
+  background: transparent;
+  padding: 0;
+  margin: 0;
 }
 
 /* Figures (Markdown/HTML <figure>) */

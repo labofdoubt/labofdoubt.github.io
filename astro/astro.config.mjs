@@ -23,8 +23,10 @@ export default defineConfig({
         {
           // Put BibTeX entries here:
           bibliography: ["./src/content/references.bib"],
+          // Numeric in-text citations like [1] and grouped like [1, 2, 3]
+          csl: "./src/content/csl/numeric-brackets.csl",
           // Rendered bibliography will appear where you place: <div id="refs"></div>
-          linkCitations: true
+          linkCitations: true,
         },
       ],
     ],

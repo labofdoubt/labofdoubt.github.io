@@ -28,11 +28,9 @@
         </names>
         <text variable="title"/>
         <text variable="container-title"/>
-        <text variable="issued">
-          <date>
-            <date-part name="year"/>
-          </date>
-        </text>
+        <date variable="issued">
+          <date-part name="year"/>
+        </date>
         <text variable="URL"/>
       </group>
     </layout>

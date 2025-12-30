@@ -4,7 +4,7 @@
   --gutter: clamp(1rem, 4vw, 1.5rem);
   --measure: 65ch; /* target readable line length */
   --wide-max: 1100px;
-  --eq-tag-outset: 5rem; /* how far equation numbers sit into the right gutter */
+  /* (KaTeX equation-number positioning is left to KaTeX defaults) */
   --bg: #ffffff;
   --text: #0f172a;
   --muted: #475569;
@@ -283,52 +283,8 @@ nav.site a:hover {
   text-align: left;
 }
 
-/* KaTeX display math + equation numbering
-   Why this exists:
-   - KaTeX's built-in equation tags can overlap/clamp when we also add horizontal scrolling.
-   - Positioning the built-in `.tag` can be brittle because it lives inside the scroll container.
-   Solution:
-   - Hide KaTeX's internal tag and render a clean right-margin number via CSS counters.
-   Notes:
-   - This numbers display equations in document order. If you include *unnumbered* display math,
-     it will still be numbered. (In this blog, you use \begin{equation} for numbered displays.) */
-.prose {
-  counter-reset: eq;
-}
-
-.prose .katex-display {
-  display: block;
-  position: relative;
-  max-width: 100%;
-  width: 100%;
-  padding: 0.25rem 0;
-  counter-increment: eq;
-}
-
-.prose .katex-display > .katex {
-  display: block;
-  max-width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  padding: 0.25rem calc(4.5em + var(--eq-tag-outset)) 0.25rem 0; /* reserve space for number */
-}
-
-/* Hide KaTeX's own tag (we draw our own) */
-.prose .katex-display .tag {
-  display: none !important;
-}
-
-/* Our equation number, aligned to the end of the prose column */
-.prose .katex-display::after {
-  content: "(" counter(eq) ")";
-  position: absolute;
-  right: calc(-1 * var(--eq-tag-outset));
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text);
-  white-space: nowrap;
-}
+/* KaTeX display math / equation numbering:
+   use KaTeX defaults (no custom CSS numbering/positioning) */
 
 /* Figures (Markdown/HTML <figure>) */
 .prose figure {

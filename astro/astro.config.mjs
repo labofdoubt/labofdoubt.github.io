@@ -5,6 +5,7 @@ import sitemap from "@astrojs/sitemap";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import rehypeCitation from "rehype-citation";
+import rehypeLinkifyBibliographyUrls from "./src/rehype/linkify-bibliography-urls.mjs";
 
 // NOTE:
 // - For `labofdoubt.github.io` (user/organization pages), `base` should be "/".
@@ -29,6 +30,8 @@ export default defineConfig({
           linkCitations: true,
         },
       ],
+      // Ensure URLs in the generated bibliography are clickable
+      rehypeLinkifyBibliographyUrls,
     ],
   },
 });

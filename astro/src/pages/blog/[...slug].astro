@@ -17,10 +17,12 @@ const { Content } = await post.render();
 ---
 
 <BaseLayout title={post.data.title}>
-  <article>
-    <h1>{post.data.title}</h1>
-    <div class="post-meta">{post.data.date.toISOString().slice(0, 10)}</div>
-    <div style="margin-top: 1.25rem; text-align: left;">
+  <article class="article">
+    <header class="article-header">
+      <h1 class="article-title">{post.data.title}</h1>
+      <div class="post-meta">{post.data.date.toISOString().slice(0, 10)}</div>
+    </header>
+    <div class="prose">
       <Content />
     </div>
   </article>

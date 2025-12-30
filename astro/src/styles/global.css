@@ -4,6 +4,7 @@
   --gutter: clamp(1rem, 4vw, 1.5rem);
   --measure: 65ch; /* target readable line length */
   --wide-max: 1100px;
+  --figure-wide: calc(var(--measure) + 10ch); /* slightly wider than the text column */
   /* (KaTeX equation-number positioning is left to KaTeX defaults) */
   --bg: #ffffff;
   --text: #0f172a;
@@ -318,14 +319,14 @@ nav.site a:hover {
 
 /* Wide figures: can exceed the prose measure but stay within viewport gutters */
 .prose figure.wide {
-  width: min(var(--wide-max), calc(100vw - (2 * var(--gutter))));
+  width: min(var(--figure-wide), calc(100vw - (2 * var(--gutter))));
   margin: 1.75rem auto;
   margin-left: 50%;
   transform: translateX(-50%);
 }
 
 .prose figure.wide + p {
-  max-width: min(var(--wide-max), calc(100vw - (2 * var(--gutter))));
+  max-width: min(var(--figure-wide), calc(100vw - (2 * var(--gutter))));
 }
 
 /* KaTeX base sizing */

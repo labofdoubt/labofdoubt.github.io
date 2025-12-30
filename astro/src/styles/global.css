@@ -2,7 +2,7 @@
   /* Layout widths */
   --navw: 860px;
   --gutter: clamp(1rem, 4vw, 1.5rem);
-  --measure: 65ch; /* target readable line length */
+  --measure: 80ch; /* target readable line length */
   --wide-max: 1100px;
   --bg: #ffffff;
   --text: #0f172a;
@@ -287,12 +287,21 @@ nav.site a:hover {
   overflow-x: auto;
   overflow-y: hidden;
   max-width: 100%;
-  padding: 0.25rem 0;
+  padding: 0.25rem 3.5em 0.25rem 0;
+  position: relative; /* ensures KaTeX equation numbers position correctly */
 }
 
 .prose .katex-display > .katex {
   display: inline-block;
   padding: 0.25rem 0;
+  /* Let long equations define scroll width without forcing page overflow */
+  min-width: max-content;
+}
+
+/* KaTeX equation numbers (from \begin{equation}...\end{equation}) */
+.prose .katex-display .tag {
+  background: var(--bg);
+  padding-left: 0.5em;
 }
 
 /* Figures (Markdown/HTML <figure>) */

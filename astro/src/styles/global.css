@@ -57,6 +57,12 @@ header.site {
   z-index: 10;
 }
 
+/* When jumping to #hash anchors, don't hide the target under the sticky navbar */
+.eq-anchor {
+  display: block;
+  scroll-margin-top: 5.5rem;
+}
+
 nav.site {
   max-width: var(--navw);
   margin: 0 auto;

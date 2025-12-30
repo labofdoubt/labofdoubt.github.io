@@ -60,6 +60,13 @@ main span.citation a {
   text-decoration: none;
 }
 
+/* Bibliography external links (e.g., arXiv URLs) */
+main #refs a[href^="http"],
+main #refs a[href^="https"] {
+  color: var(--ref-link);
+  text-decoration: none;
+}
+
 main a[href^="#fig-"]:hover,
 main a[href^="#eq-"]:hover,
 main a[href^="#eq:"]:hover,
@@ -73,6 +80,12 @@ main a[role="doc-biblioref"]:hover,
 main a.citation:hover,
 main .csl-citation a:hover,
 main span.citation a:hover {
+  color: var(--ref-link-hover);
+  text-decoration: none;
+}
+
+main #refs a[href^="http"]:hover,
+main #refs a[href^="https"]:hover {
   color: var(--ref-link-hover);
   text-decoration: none;
 }

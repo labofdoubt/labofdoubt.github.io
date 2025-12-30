@@ -31,8 +31,8 @@
         <date variable="issued">
           <date-part name="year"/>
         </date>
-        <!-- In HTML output this should render as a clickable hyperlink -->
-        <text variable="URL" prefix="Available at: "/>
+        <!-- URL (will be linkified into a clickable <a> by our rehype plugin) -->
+        <text variable="URL"/>
       </group>
     </layout>
   </bibliography>

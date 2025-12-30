@@ -8,6 +8,8 @@
   --border: rgba(15, 23, 42, 0.12);
   --accent: #0f172a;
   --hover: #64748b;
+  --ref-link: #60a5fa; /* light blue */
+  --ref-link-hover: #3b82f6;
 }
 
 * {
@@ -38,6 +40,29 @@ a {
 }
 a:hover {
   text-decoration: underline;
+}
+
+/* In-text references (figures/equations/citations): light blue and clearly clickable */
+main a[href^="#fig-"],
+main a[href^="#eq-"],
+main a[href^="#eq:"],
+main a[href^="#ref-"],
+main a[href^="#cite-"],
+main a[role="doc-biblioref"],
+main a.citation {
+  color: var(--ref-link);
+  text-decoration: none;
+}
+
+main a[href^="#fig-"]:hover,
+main a[href^="#eq-"]:hover,
+main a[href^="#eq:"]:hover,
+main a[href^="#ref-"]:hover,
+main a[href^="#cite-"]:hover,
+main a[role="doc-biblioref"]:hover,
+main a.citation:hover {
+  color: var(--ref-link-hover);
+  text-decoration: none;
 }
 
 /* Home title ("SA" in the main panel) */

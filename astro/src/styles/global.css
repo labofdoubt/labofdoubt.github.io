@@ -213,6 +213,10 @@ nav.site a:hover {
   margin: 0 auto;
 }
 
+.prose .nowrap {
+  white-space: nowrap;
+}
+
 .prose :is(h1, h2, h3, h4) {
   line-height: 1.2;
   letter-spacing: -0.01em;

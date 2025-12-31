@@ -12,8 +12,8 @@
   --border: rgba(15, 23, 42, 0.12);
   --accent: #0f172a;
   --hover: #64748b;
-  --ref-link: #3b82f6; /* slightly darker blue for readability on white */
-  --ref-link-hover: #2563eb;
+  --ref-link: #2563eb; /* slightly darker blue for readability on white */
+  --ref-link-hover: #1d4ed8;
 }
 
 * {

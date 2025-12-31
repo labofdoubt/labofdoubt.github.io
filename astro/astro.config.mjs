@@ -6,6 +6,7 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import rehypeCitation from "rehype-citation";
 import rehypeLinkifyBibliographyUrls from "./src/rehype/linkify-bibliography-urls.mjs";
+import rehypeNoWrapMathPunctuation from "./src/rehype/nowrap-math-punctuation.mjs";
 
 // NOTE:
 // - For `labofdoubt.github.io` (user/organization pages), `base` should be "/".
@@ -19,6 +20,8 @@ export default defineConfig({
     // Render KaTeX as HTML only (prevents “double rendering” in some browsers)
     rehypePlugins: [
       [rehypeKatex, { output: "html" }],
+      // Prevent orphan punctuation after inline math (e.g. "$x$," breaking across lines)
+      rehypeNoWrapMathPunctuation,
       [
         rehypeCitation,
         {

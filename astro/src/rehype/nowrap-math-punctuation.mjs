@@ -23,6 +23,12 @@ function isRaw(node) {
   return node && node.type === "raw" && typeof node.value === "string";
 }
 
+function isNoWrapContainer(node) {
+  if (!isElement(node)) return false;
+  const cls = classList(node);
+  return cls.includes("nowrap");
+}
+
 function classList(node) {
   const cn = node?.properties?.className;
   if (!cn) return [];
@@ -62,6 +68,9 @@ export default function rehypeNoWrapMathPunctuation() {
     while (stack.length) {
       const node = stack.pop();
       if (!node || !node.children || !Array.isArray(node.children)) continue;
+      // Critical: do NOT process inside an existing nowrap wrapper, otherwise we will
+      // keep wrapping the same KaTeX+punct over and over (infinite nesting → OOM).
+      if (isNoWrapContainer(node)) continue;
 
       const { children } = node;
       for (let i = 0; i < children.length - 1; i++) {

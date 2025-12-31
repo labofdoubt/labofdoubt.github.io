@@ -1,6 +1,6 @@
 ---
 title: "Normalization-free transformers are subcritical"
-date: 2025-12-20
+date: 2025-12-31
 description: "What do Transformers with pointwise normalization functions trade off to achieve better computational efficiency?"
 ---
 

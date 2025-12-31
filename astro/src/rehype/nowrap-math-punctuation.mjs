@@ -35,7 +35,10 @@ function isText(node) {
   return node && node.type === "text" && typeof node.value === "string";
 }
 
-const PUNCT_RE = /^[,.;:!?]/;
+// Allow optional leading whitespace (incl. NBSP) before punctuation, because
+// markdown/typography can sometimes emit a text node like "\u00A0,".
+// Also include closing brackets/parentheses as common "orphan" characters.
+const LEADING_WS_AND_PUNCT_RE = /^([\t \n\r\u00A0]*)([,.;:!?\)\]\}])/;
 
 export default function rehypeNoWrapMathPunctuation() {
   return (tree) => {
@@ -53,16 +56,18 @@ export default function rehypeNoWrapMathPunctuation() {
 
         if (!isInlineKatex(cur)) continue;
         if (!isText(next)) continue;
-        if (!PUNCT_RE.test(next.value)) continue;
+        const m = next.value.match(LEADING_WS_AND_PUNCT_RE);
+        if (!m) continue;
 
-        const punct = next.value[0];
-        const rest = next.value.slice(1);
+        const lead = m[1] ?? "";
+        const punct = m[2];
+        const rest = next.value.slice((lead + punct).length);
 
         const wrapper = {
           type: "element",
           tagName: "span",
           properties: { className: ["nowrap"] },
-          children: [cur, { type: "text", value: punct }],
+          children: [cur, { type: "text", value: lead + punct }],
         };
 
         // Replace cur with wrapper, and update/remove next text node.

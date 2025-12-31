@@ -19,6 +19,10 @@ function isElement(node) {
   return node && node.type === "element";
 }
 
+function isRaw(node) {
+  return node && node.type === "raw" && typeof node.value === "string";
+}
+
 function classList(node) {
   const cn = node?.properties?.className;
   if (!cn) return [];
@@ -31,8 +35,18 @@ function isInlineKatex(node) {
   return cls.includes("katex") && !cls.includes("katex-display");
 }
 
+function isInlineKatexRaw(node) {
+  if (!isRaw(node)) return false;
+  // rehype-katex sometimes emits raw HTML; catch inline KaTeX but not display KaTeX.
+  return node.value.includes('class="katex"') && !node.value.includes("katex-display");
+}
+
 function isText(node) {
   return node && node.type === "text" && typeof node.value === "string";
+}
+
+function isWhitespaceOnlyText(node) {
+  return isText(node) && /^[\t \n\r\u00A0]*$/.test(node.value);
 }
 
 // Allow optional leading whitespace (incl. NBSP) before punctuation, because
@@ -52,9 +66,18 @@ export default function rehypeNoWrapMathPunctuation() {
       const { children } = node;
       for (let i = 0; i < children.length - 1; i++) {
         const cur = children[i];
-        const next = children[i + 1];
+        const isMath = isInlineKatex(cur) || isInlineKatexRaw(cur);
+        if (!isMath) continue;
 
-        if (!isInlineKatex(cur)) continue;
+        // Skip over whitespace-only nodes between math and punctuation (common with NBSP).
+        let j = i + 1;
+        let interWs = "";
+        while (j < children.length && isWhitespaceOnlyText(children[j])) {
+          interWs += children[j].value;
+          j++;
+        }
+        const next = children[j];
+
         if (!isText(next)) continue;
         const m = next.value.match(LEADING_WS_AND_PUNCT_RE);
         if (!m) continue;
@@ -67,15 +90,25 @@ export default function rehypeNoWrapMathPunctuation() {
           type: "element",
           tagName: "span",
           properties: { className: ["nowrap"] },
-          children: [cur, { type: "text", value: lead + punct }],
+          children: [cur, { type: "text", value: interWs + lead + punct }],
         };
 
         // Replace cur with wrapper, and update/remove next text node.
         children[i] = wrapper;
-        if (rest.length === 0) {
-          children.splice(i + 1, 1);
+        // Remove any whitespace-only nodes we skipped over.
+        if (j > i + 1) {
+          children.splice(i + 1, j - (i + 1));
+          // After splice, `next` is now at i+1.
+        }
+        const nextAfter = children[i + 1];
+        if (nextAfter && isText(nextAfter)) {
+          if (rest.length === 0) {
+            children.splice(i + 1, 1);
+          } else {
+            nextAfter.value = rest;
+          }
         } else {
-          next.value = rest;
+          // Should not happen, but keep safe.
         }
       }
 

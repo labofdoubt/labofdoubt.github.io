@@ -1,7 +1,7 @@
 ---
 title: "Normalization-free transformers are subcritical"
 date: 2025-01-02
-description: "What do Transformers with pointwise normalization functions trade off to achieve better computational efficiency?"
+description: "What do normalization-free Transformers functions trade for computational simplicity?"
 ---
 
 ## Abstract
@@ -252,13 +252,13 @@ Overall, a good initialization of $\alpha$ should avoid both extremes: values th
 <span id="conclusion"></span>
 ## 3. Conclusion
 
-Normalization-free Transformers that replace LayerNorm with saturating pointwise functions (DyT/Derf) trade computational simplicity for worse signal propagation across layers. In the mean-field picture, pre-LN residual networks are effectively critical at initialization: gradient norms grow only as a power law with depth. By contrast, DyT/Derf activation functions are subcritical in residual networks: they lead to stretched-exponential gradient amplification, which can make optimization more sensitive to hyperparameters.
+Normalization-free Transformers that replace LayerNorm with saturating pointwise functions (DyT/Derf) gain computational simplicity at the cost of worse signal propagation across layers. In the mean-field picture, pre-LN residual networks are effectively critical at initialization: gradient norms grow only as a power law with depth. By contrast, DyT/Derf activation functions are subcritical in residual networks: they lead to stretched-exponential gradient amplification, which can make optimization more sensitive to hyperparameters.
 
 A key hyperparameter in DyT/Derf is the scale $\alpha$ at initialization. Larger $\alpha$ implies stronger overall gradient amplification from late to early layers, especially relative to the pre-LN architecture, which aligns with the empirical behavior we observe in ViT despite the theory ignoring attention blocks. This perspective also helps rationalize the training recipes in [@zhu2025transformersnormalization; @chen2025strongernormalizationfreetransformers]: smaller $\alpha$ improves training stability, deeper models require smaller $\alpha$, and learning-rate warmup becomes increasingly important at larger $\alpha$.
 
 **Practical takeaways.**
 
-- Pre-LN yields near-critical gradient propagation “by default” in deep residual stacks; DyT/Derf does not.
+- Pre-LN yields near-critical gradient propagation “by default” in deep residual networks; DyT/Derf does not.
 
 - Increasing $\alpha$ increases end-to-end gradient amplification (and instability risk).
 

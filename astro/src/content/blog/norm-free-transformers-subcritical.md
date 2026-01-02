@@ -1,7 +1,7 @@
 ---
 title: "Normalization-free transformers are subcritical"
 date: 2025-01-02
-description: "What do normalization-free Transformers functions trade for computational simplicity?"
+description: "What do normalization-free Transformers trade for computational simplicity?"
 ---
 
 ## Overview

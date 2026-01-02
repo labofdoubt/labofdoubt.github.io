@@ -239,7 +239,7 @@ A perhaps more natural comparison is to align the pre-LN setup with DyT by match
 As argued in the previous section, it is natural to align pre-LN with DyT based on the size of the residual stream updates; for this reason, we compare pre-LN to the DyT variant with the relatively large value $\alpha=1$ here.
 [Fig. 4 (c)](#fig-warmup) shows the test accuracy after 9 epochs as a function of $\alpha$ and the number of warmup epochs, confirming that warmup becomes more important as $\alpha$ increases. Finally, [Fig. 4 (d)](#fig-warmup) shows that choosing $\alpha$ too small can also slow training, possibly due to the smaller residual stream updates.
 
-The models were trained with AdamW ($\beta_1 = 0.9$, $\beta_2 = 0.999$, weight decay $\lambda=0.05$) and a batch size of 256. After the initial warmup, the learning rate was constant. 
+The models were trained with AdamW ($\beta_1 = 0.9$, $\beta_2 = 0.999$, weight decay $\lambda=0.05$) and a batch size of 256. After the initial warmup, the learning rate was constant. We ran the experiments for only 30 epochs due to limited resources; fully training the models would require at least a few hundred epochs.
 
 Overall, a good initialization of $\alpha$ should avoid both extremes: values that are so small that training slows down and values that are so large that training becomes unstable. Increasing the number of warmup epochs can help stabilize training at larger $\alpha$. The pre-LN setup exhibits better training stability across a wider range of learning rates than DyT, provided that $\alpha$ is chosen so as not to overly reduce the size of the residual updates relative to pre-LN.
 

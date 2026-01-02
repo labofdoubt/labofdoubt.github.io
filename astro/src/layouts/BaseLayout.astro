@@ -27,6 +27,67 @@ const BASE_URL = import.meta.env.BASE_URL; // "/" in dev; "/astro/" when built f
         <slot />
       </div>
     </main>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-left">
+          <span class="footer-label">Email:</span>
+          <a class="footer-email" href="mailto:your.email@example.com">your.email@example.com</a>
+        </div>
+        <div class="footer-right" aria-label="Social links">
+          <a
+            class="icon-link"
+            href="https://x.com/your_handle"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="X (Twitter)"
+            title="X"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path
+                fill="currentColor"
+                d="M18.9 2H22l-6.8 7.8L23 22h-6.5l-5.1-6.7L5.6 22H2.5l7.3-8.4L2 2h6.6l4.6 6.1L18.9 2zm-1.1 18h1.8L7.6 3.9H5.7L17.8 20z"
+              />
+            </svg>
+          </a>
+
+          <a
+            class="icon-link"
+            href="https://scholar.google.com/citations?user=YOUR_ID"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Google Scholar"
+            title="Google Scholar"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path
+                fill="currentColor"
+                d="M12 2 1 7l11 5 9-4.1V17h2V7L12 2zm0 7.2L4.1 7 12 3.8 19.9 7 12 9.2z"
+              />
+              <path
+                fill="currentColor"
+                d="M6.5 11.2V15c0 3.3 2.5 6 5.5 6s5.5-2.7 5.5-6v-3.8L12 13l-5.5-1.8z"
+              />
+            </svg>
+          </a>
+
+          <a
+            class="icon-link"
+            href="https://github.com/your_username"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub"
+            title="GitHub"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path
+                fill="currentColor"
+                d="M12 2C6.48 2 2 6.58 2 12.24c0 4.52 2.87 8.36 6.84 9.71.5.1.68-.22.68-.48 0-.24-.01-.87-.01-1.7-2.78.62-3.37-1.37-3.37-1.37-.46-1.2-1.12-1.52-1.12-1.52-.92-.64.07-.62.07-.62 1.02.07 1.55 1.08 1.55 1.08.9 1.6 2.36 1.14 2.94.87.09-.67.35-1.14.63-1.4-2.22-.26-4.56-1.14-4.56-5.09 0-1.12.39-2.03 1.03-2.74-.1-.26-.45-1.32.1-2.75 0 0 .84-.28 2.75 1.05.8-.23 1.65-.34 2.5-.35.85.01 1.7.12 2.5.35 1.9-1.33 2.74-1.05 2.74-1.05.55 1.43.2 2.49.1 2.75.64.71 1.03 1.62 1.03 2.74 0 3.96-2.34 4.83-4.57 5.08.36.32.68.96.68 1.94 0 1.4-.01 2.52-.01 2.86 0 .27.18.59.69.48A10.24 10.24 0 0 0 22 12.24C22 6.58 17.52 2 12 2z"
+              />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>
 

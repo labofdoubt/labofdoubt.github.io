@@ -121,7 +121,7 @@ $$
 \mathcal{J}^{L, l} = \chi^l_{\mathcal{J}} \mathcal{J}^{L, l+1}.
 \end{equation}
 $$
-Equivalently, $\mathcal{J}^{l+1, l_0} = \chi^l_{\mathcal{J}} \mathcal{J}^{l, l_0}$ for $l > l_0$. The asymptotic behavior of $\chi^l_{\mathcal{J}}$ as $l$ becomes large determines the phase of a deep network: values greater than $1$ correspond to the chaotic phase, in which gradients grow exponentially (from later layers to earlier ones); values less than $1$ correspond to the ordered phase, in which gradients decay exponentially; and values close to $1$ correspond to criticality. The quantity $\chi^*_{\mathcal{J}}$ used in [Fig. 1](#fig-phase-diag) is the asymptotic value of $\chi^l_{\mathcal{J}}$ as $l\to\inf$, which is approximated by the final-layer value $\chi^L_{\mathcal{J}}$.
+Equivalently, $\mathcal{J}^{l+1, l_0} = \chi^l_{\mathcal{J}} \mathcal{J}^{l, l_0}$ for $l > l_0$. The asymptotic behavior of $\chi^l_{\mathcal{J}}$ as $l$ becomes large determines the phase of a deep network: values greater than $1$ correspond to the chaotic phase, in which gradients grow exponentially (from later layers to earlier ones); values less than $1$ correspond to the ordered phase, in which gradients decay exponentially; and values close to $1$ correspond to criticality. The quantity $\chi^*_{\mathcal{J}}$ used in [Fig. 1](#fig-phase-diag) is the asymptotic value of $\chi^l_{\mathcal{J}}$ as $l\to\infty$, which is approximated by the final-layer value $\chi^L_{\mathcal{J}}$.
 
 For the model in Eq. [(1)](#eq-residual-update) with LayerNorm,
 <span id="eq-chi-layernorm" class="eq-anchor"></span>

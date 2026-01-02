@@ -262,7 +262,7 @@ A key hyperparameter in DyT/Derf is the scale $\alpha$ at initialization. Larger
 
 - Increasing $\alpha$ increases end-to-end gradient amplification (and instability risk).
 
-- Depth matters: as depth increases, stable training tends to require smaller $\alpha$ and/or more careful lr schedule tuning.
+- Depth matters: as depth increases, matching pre-LN gradient amplification in DyT requires decreasing $\alpha$.
 
 - Warmup for DyT/Derf can be a stabilizer, similar in spirit to warmup in architectures with poor early gradient flow.
 

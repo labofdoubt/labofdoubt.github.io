@@ -129,6 +129,16 @@ main #refs a[href^="https"]:hover {
   margin: 0 auto;
 }
 
+.home-hero a.home-link {
+  color: var(--hover);
+  text-decoration: none;
+}
+
+.home-hero a.home-link:hover {
+  color: var(--muted);
+  text-decoration: none;
+}
+
 /* Simple modern header */
 header.site {
   position: sticky;

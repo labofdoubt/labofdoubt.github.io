@@ -12,7 +12,7 @@ We analyze how the initialization of the parameter $\alpha$, which appears in Dy
 
 ## How to read this post
 
-The blog contains the following sections:
+The blog post contains the following sections:
 
 - **1.** [Background](#background)
   - **1.1** [Criticality: large picture](#criticality-large-picture)

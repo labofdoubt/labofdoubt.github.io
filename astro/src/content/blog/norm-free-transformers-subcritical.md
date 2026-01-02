@@ -258,7 +258,7 @@ A key hyperparameter in DyT/Derf is the scale $\alpha$ at initialization. Larger
 
 **Practical takeaways.**
 
-- Pre-LN yields near-critical gradient propagation “by default” in deep residual networks; DyT/Derf does not.
+- Pre-LN yields critical gradient propagation “by default” in deep residual networks; DyT/Derf does not.
 
 - Increasing $\alpha$ increases end-to-end gradient amplification (and instability risk).
 

@@ -1,6 +1,6 @@
 ---
 title: "Normalization-free transformers are subcritical"
-date: 2025-12-31
+date: 2025-01-02
 description: "What do Transformers with pointwise normalization functions trade off to achieve better computational efficiency?"
 ---
 
@@ -235,7 +235,7 @@ A perhaps more natural comparison is to align the pre-LN setup with DyT by match
 <span id="dyt-warmup"></span>
 ### 2.4 DyT benefits from learning rate warmup
 
-[@zhu2025transformersnormalization; @chen2025strongernormalizationfreetransformers] trained their DyT ViT models with learning-rate warmup. We empirically show that, in addition to tuning initial $\alpha$, DyT Transformers may require careful tuning of the number of warmup steps when $\alpha$ is large, whereas this is less important for the pre-LN variant. We train a ViT-B ($12$ layers, hidden dimension $N=768$) on CIFAR-100, with DyT and with pre-LN, varying the number of warmup epochs, the learning rate, and the DyT parameter $\alpha$ at initialization. [Fig. 4 (a)](#fig-warmup) shows that reducing the number of warmup epochs can destabilize training with DyT, while using too many warmup epochs can slow training: the model without warmup diverges, while the model with 3 warmup epochs converges slightly faster than the model with 10 warmup epochs. [Fig. 4 (b)](#fig-warmup) compares the DyT variant ($\alpha = 1$) to the pre-LN variant without warmup as the learning rate is varied. The DyT model with $\alpha=1$ trains stably only at the lowest learning rate, and converges more slowly than the pre-LN baseline. 
+[@zhu2025transformersnormalization; @chen2025strongernormalizationfreetransformers] trained their DyT/Derf ViT models with learning-rate warmup. We empirically show that, in addition to tuning initial $\alpha$, DyT Transformers may require careful tuning of the number of warmup steps when $\alpha$ is large, whereas this is less important for the pre-LN variant. We train a ViT-B ($12$ layers, hidden dimension $N=768$) on CIFAR-100, with DyT and with pre-LN, varying the number of warmup epochs, the learning rate, and the DyT parameter $\alpha$ at initialization. [Fig. 4 (a)](#fig-warmup) shows that reducing the number of warmup epochs can destabilize training with DyT, while using too many warmup epochs can slow training: the model without warmup diverges, while the model with 3 warmup epochs converges slightly faster than the model with 10 warmup epochs. [Fig. 4 (b)](#fig-warmup) compares the DyT variant ($\alpha = 1$) to the pre-LN variant without warmup as the learning rate is varied. The DyT model with $\alpha=1$ trains stably only at the lowest learning rate, and converges more slowly than the pre-LN baseline. 
 As argued in the previous section, it is natural to align pre-LN with DyT based on the size of the residual stream updates; for this reason, we compare pre-LN to the DyT variant with the relatively large value $\alpha=1$ here.
 [Fig. 4 (c)](#fig-warmup) shows the test accuracy after 9 epochs as a function of $\alpha$ and the number of warmup epochs, confirming that warmup becomes more important as $\alpha$ increases. Finally, [Fig. 4 (d)](#fig-warmup) shows that choosing $\alpha$ too small can also slow training, possibly due to the smaller residual stream updates.
 

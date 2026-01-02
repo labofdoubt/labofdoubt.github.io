@@ -8,7 +8,7 @@ description: "What do Transformers with pointwise normalization functions trade 
 
 In this blog post, we connect recent work proposing LayerNorm-free Transformers [@zhu2025transformersnormalization; @chen2025strongernormalizationfreetransformers], in which (pre-)LayerNorm (LN) is replaced by pointwise activation functions such as $\tanh$ or $\text{erf}$, with the body of work studying criticality in wide neural networks at initialization. We note that, in residual networks, replacing LN with $\tanh$-like pointwise functions leads to subcritical behavior, whereas LayerNorm achieves criticality, as previously shown in [@doshi2023criticalinitializationwidedeep; @yang2017meanfieldresidualnetworks]. In practical terms, residual networks with Dynamic $\tanh$ (DyT) or Dynamic $\text{erf}$ (Derf) exhibit worse gradient propagation than pre-LN residual networks: gradients grow stretched-exponentially with depth (from the last layer to the first) rather than following a power law. This can cause training instability and may require more careful hyperparameter tuning to avoid divergence.
 
-We analyze how the initialization of the parameter $\alpha$, which appears in DyT/Derf, affects gradient propagation in the model proposed in [@doshi2023criticalinitializationwidedeep]. For networks of finite depth, smaller values of $\alpha$ give rise to exponentially growing gradients, whereas larger values of $\alpha$ give rise to stretched-exponentially growing gradients. Larger values of $\alpha$ lead to stronger gradient amplification, which may explain several empirical observations in DyT/Derf models: training is typically more stable at smaller $\alpha$, while overly large $\alpha$ can lead to divergence; deeper models require smaller $\alpha$. Moreover, if $\alpha$ is chosen so that the residual-update size in DyT/Derf matches that of pre-LN, DyT/Derf exhibits much stronger gradient amplification than pre-LN. We show that the qualitative gradient behavior in ViT aligns well with the theory, even though the theory does not account for attention blocks. In addition, we empirically show that DyT/Derf models initialized with larger $\alpha$ may benefit from learning rate warm-up more than pre-LN.
+We analyze how the initialization of the parameter $\alpha$, which appears in DyT/Derf, affects gradient propagation in the model proposed in [@doshi2023criticalinitializationwidedeep]. For networks of finite depth, smaller values of $\alpha$ give rise to exponentially growing gradients, whereas larger values of $\alpha$ give rise to stretched-exponentially growing gradients. Larger values of $\alpha$ lead to stronger gradient amplification, which may explain several empirical observations in DyT/Derf models: training is typically more stable at smaller $\alpha$, while overly large $\alpha$ can lead to divergence; deeper models require smaller $\alpha$. Moreover, if $\alpha$ is chosen so that the residual-update size in DyT/Derf matches that of pre-LN, DyT/Derf exhibits much stronger gradient amplification than pre-LN. We show that the qualitative gradient behavior in ViT aligns well with the theory, even though the theory does not account for attention blocks. In addition, we empirically show that DyT/Derf models initialized with larger $\alpha$ may benefit from learning rate warmup more than pre-LN.
 
 ## How to read it?
 
@@ -22,7 +22,7 @@ The blog contains the following sections:
   - **2.1** [LayerNorm vs. tanh-like nonlinearity: criticality perspective](#layernorm-vs-tanh)
   - **2.2** [Introducing $\alpha$: finite-depth transition from exponential to stretched-exponential behavior](#introducing-alpha)
   - **2.3** [Empirical gradient norms in a Transformer with DyT](#empirical-dyt)
-  - **2.4** [DyT benefits from learning rate warm-up](#dyt-warmup)
+  - **2.4** [DyT benefits from learning rate warmup](#dyt-warmup)
 - **3.** [Conclusion](#conclusion)
 - **4.** [References](#references)
 
@@ -30,7 +30,7 @@ Readers interested only in the empirical results on gradient propagation in ViT 
 
 Sections [**1.1**](#criticality-large-picture)–[**2.1**](#layernorm-vs-tanh) review existing theoretical results on signal propagation in deep neural networks and provide a gentle introduction to the topic. Namely, Section [**1.1**](#criticality-large-picture) introduces the ordered and chaotic phases, as well as criticality, for signal propagation in neural networks. Section [**1.2**](#criticality-mean-field) introduces the mean-field formalism in the large-width limit, which allows one to quantify signal-propagation properties. Section [**2.1**](#layernorm-vs-tanh) compares the signal-propagation behavior of a toy residual network with LayerNorm and with a $\tanh$-like nonlinearity, and shows theoretically why the former leads to better gradient propagation.
 
-Section [**2.2**](#introducing-alpha) extends the theoretical analysis by introducing the DyT/Derf parameter $\alpha$, which rescales the input to the nonlinearity. Section [**2.3**](#empirical-dyt) studies signal propagation empirically in a Transformer model and compares DyT models to the pre-LN baseline. Section [**2.4**](#dyt-warmup) studies the effect of warm-up on training stability for DyT models and compares it to the pre-LN baseline.
+Section [**2.2**](#introducing-alpha) extends the theoretical analysis by introducing the DyT/Derf parameter $\alpha$, which rescales the input to the nonlinearity. Section [**2.3**](#empirical-dyt) studies signal propagation empirically in a Transformer model and compares DyT models to the pre-LN baseline. Section [**2.4**](#dyt-warmup) studies the effect of warmup on training stability for DyT models and compares it to the pre-LN baseline.
 
 <span id="background"></span>
 ## 1. Background
@@ -57,12 +57,11 @@ h^{l+1} = \mu h^l + W\phi(\tilde h^{l}) + b,
 $$
 where $h^l \in \mathbb{R}^{N_l}$, $W\in \mathbb{R}^{N_{l+1}\times N_l}$, and $b \in \mathbb{R}^{N_{l+1}}$. Here $\tilde {h}^{l}$ is either $\text{LayerNorm}(h^{l})$ or simply $h^{l}$ if no normalization layer is used. We take $h^0$ to be the initial embedding. The components of the weight matrix $W$ are initialized from $\mathcal{N}(0, \sigma_w^2/N_l)$, and the components of the bias vector $b$ are initialized from $\mathcal{N}(0, \sigma_b^2)$. The parameter $\mu$, which is typically set to $1$ in modern transformers, is the residual scaling that controls the contribution of the residual stream. When $\mu = 0$, the model reduces to a feedforward network without residual connections. 
 
-<figure id="fig-phase_diag" class="wide">
-  <img src="/figures/phase_diagrams.svg" alt="Transition depth as a function of alpha (placeholder)." />
+<figure id="fig-phase-diag" class="wide">
+  <img src="/figures/phase_diagrams.svg" alt="Empirical phase diagrams and training accuracy for a deep MLP with 50 layers and hidden dimension 500 (with/without residual connections, LayerNorm, with different activation functions)." />
 </figure>
 
-**Figure 1.** Empirical phase diagrams and training accuracy for a deep MLP with 50 layers and hidden dimension $N=50$ (with/without residual connections, LayerNorm, with different activation functions). *Figures reprinted from* [@doshi2023criticalinitializationwidedeep] *with permission from the authors*. **Upper panel**: $\chi_\mathcal{J}^*$ quantifies proximity to criticality: $\chi_\mathcal{J}^* = 1$ corresponds to criticality, $\chi_\mathcal{J}^* > 1$ to the chaotic phase, and $\chi_\mathcal{J}^* < 1$ to the ordered phase. Solid lines indicate the criticality boundary predicted by the infinite-width calculation. **Lower panel**: training accuracy of the deep MLP on FashionMNIST. The dashed white
-lines denote the (analytical) critical lines.
+**Figure 1.** Empirical phase diagrams and training accuracy for a deep MLP with 50 layers and hidden dimension $N=500$ (with/without residual connections, LayerNorm, with different activation functions). *Figures reprinted from* [@doshi2023criticalinitializationwidedeep] *with permission from the authors*. **Upper panel**: $\chi_\mathcal{J}^*$ quantifies proximity to criticality: $\chi_\mathcal{J}^* = 1$ corresponds to criticality, $\chi_\mathcal{J}^* > 1$ to the chaotic phase, and $\chi_\mathcal{J}^* < 1$ to the ordered phase. Solid lines indicate the criticality boundary predicted by the infinite-width calculation. **Lower panel**: training accuracy of the deep MLP on FashionMNIST. The dashed white lines denote the (analytical) critical lines.
 
 [Fig. 1](#fig-phase-diag) (upper panel) shows phase diagrams in the $(\sigma_w, \sigma_b)$ plane for the model in Eq. [(1)](#eq-residual-update), for multiple choices of the nonlinearity $\phi$, multiple values of the residual scaling $\mu$, and with and without LayerNorm. Each point in the phase diagram is characterized by the theoretically computed quantity $\chi_\mathcal{J}^*$, which is *roughly* equal to $e^{1/\xi}$ and will be defined more rigorously below. Criticality is achieved when $\chi_\mathcal{J}^*=1$, while $\chi_\mathcal{J}^* < 1$ ($\chi_\mathcal{J}^* > 1$ ) corresponds to the ordered (chaotic) phase. [Fig. 1](#fig-phase-diag) (lower panel) shows the training accuracy of the same models on FashionMNIST.
 
@@ -122,7 +121,7 @@ $$
 \mathcal{J}^{L, l} = \chi^l_{\mathcal{J}} \mathcal{J}^{L, l+1}.
 \end{equation}
 $$
-Equivalently, $\mathcal{J}^{l+1, l_0} = \chi^l_{\mathcal{J}} \mathcal{J}^{l, l_0}$ for $l > l_0$. The asymptotic behavior of $\chi^l_{\mathcal{J}}$ as $l$ becomes large determines the phase of a deep network: values greater than $1$ correspond to the chaotic phase, in which gradients grow exponentially (from later layers to earlier ones); values less than $1$ correspond to the ordered phase, in which gradients decay exponentially; and values close to $1$ correspond to criticality. The quantity $\chi^*_{\mathcal{J}}$ used in (Fig. 1)[#fig-phase-diag] in the previous section is $\chi^L_{\mathcal{J}}$, where $L$ is the final layer.
+Equivalently, $\mathcal{J}^{l+1, l_0} = \chi^l_{\mathcal{J}} \mathcal{J}^{l, l_0}$ for $l > l_0$. The asymptotic behavior of $\chi^l_{\mathcal{J}}$ as $l$ becomes large determines the phase of a deep network: values greater than $1$ correspond to the chaotic phase, in which gradients grow exponentially (from later layers to earlier ones); values less than $1$ correspond to the ordered phase, in which gradients decay exponentially; and values close to $1$ correspond to criticality. The quantity $\chi^*_{\mathcal{J}}$ used in [Fig. 1](#fig-phase-diag) in the previous section is $\chi^L_{\mathcal{J}}$, where $L$ is the final layer.
 
 For the model in Eq. [(1)](#eq-residual-update) with LayerNorm,
 <span id="eq-chi-layernorm" class="eq-anchor"></span>
@@ -141,7 +140,7 @@ $$
 \left[ \phi'(h)^2 \right].
 \end{equation}
 $$
-For derivations of Eqs. [(6)](#eq-gradnorm-apjn)–[(9)](#eq-chi-no-layernorm), we refer the reader to [@doshi2023criticalinitializationwidedeep]. All of these expressions follow directly from the definition of the APJN. Note the additional factor of $\mathcal{K}_l^{-1}$ in Eq. [(8)](#eq-chi-layernorm) relative to Eq. [(9)](#eq-chi-no-layernorm), which arises from the LayerNorm Jacobian – **it is crucical for achieving criticality in pre-LN residual networks**. 
+For derivations of Eqs. [(6)](#eq-gradnorm-apjn)–[(9)](#eq-chi-no-layernorm), we refer the reader to [@doshi2023criticalinitializationwidedeep]. All of these expressions follow directly from the definition of the APJN. Note the additional factor of $\mathcal{K}_l^{-1}$ in Eq. [(8)](#eq-chi-layernorm) relative to Eq. [(9)](#eq-chi-no-layernorm), which arises from the LayerNorm Jacobian – **it is crucial for achieving criticality in pre-LN residual networks**. 
 
 Overall, once $\mathcal{K}_l$ is obtained from the variance-propagation equation [(2)](#eq-variance-recursion), Eq. [(8)](#eq-chi-layernorm) or Eq. [(9)](#eq-chi-no-layernorm) determines the APJN and, consequently, the layer-wise behavior of the gradient norm.
 
@@ -175,7 +174,7 @@ $$
 $$
 In this case, the expectations depend explicitly on $\mathcal{K}_l$, and the behavior of $\chi^l_{\mathcal{J}}$ depends strongly on the choice of nonlinearity $\phi$. 
 
-For $\tanh$-like nonlinearities $\phi$, $\phi(h)^2$ is close to $1$ on the whole real line except in the vicinity of $h=0$. As $\mathcal{K}_l$ grows, the probability mass near $h=0$ decreases and $\mathbb{E}\left[ \phi(h)^2 \right]$ approaches $1$. Thus, $\mathcal{K}_l \sim l$ for large $l$. A more geometric way to see this is to note that once the pre-activations in Eq. (1) are large enough, a $\tanh$-like nonlinearity effectively saturates and acts as a normalization, so the term $W\phi(h)$ has approximately constant norm.
+For $\tanh$-like nonlinearities $\phi$, $\phi(h)^2$ is close to $1$ on the whole real line except in the vicinity of $h=0$. As $\mathcal{K}_l$ grows, the probability mass near $h=0$ decreases and $\mathbb{E}\left[ \phi(h)^2 \right]$ approaches $1$. Thus, $\mathcal{K}_l \sim l$ for large $l$. A more geometric way to see this is to note that once the pre-activations in Eq. [(1)](#eq-residual-update) are large enough, a $\tanh$-like nonlinearity effectively saturates and acts as a normalization, so the term $W\phi(h)$ has approximately constant norm.
 
 On the other hand, $\phi'(h)^2$ is concentrated near $h=0$. As $\mathcal{K}_l$ grows, the Gaussian density at the origin becomes approximately $1/\sqrt{2\pi \mathcal{K}_l}$, and consequently $\chi^l_{\mathcal{J}}=1 + \sqrt{1/\lambda \mathcal{K}_l}\approx 1 + \sqrt{1/\lambda l}$ for large $l$, where $\lambda$ is a constant determined by Eq. [(11)](#eq-no-layernorm-critical). Thus, the APJN grows stretched-exponentially, $\mathcal{J}^{l, l_0} \sim e^{\sqrt{l/\lambda}}$, and so do the gradient norms in the backward pass.
 
@@ -188,11 +187,11 @@ Let us now consider the Derf nonlinearity as defined in [@chen2025strongernormal
 <span id="eq-derf-recursion" class="eq-anchor"></span>
 $$
 \begin{equation}
-\chi^l_{\mathcal{J}} = 1 + \frac{\sigma_w^2}{\pi}\frac{4\alpha^2}{\sqrt{1+4\alpha^2 K_l}}
+\chi^l_{\mathcal{J}} = 1 + \frac{\sigma_w^2}{\pi}\frac{4\alpha^2}{\sqrt{1+4\alpha^2 \mathcal{K}_l}}
 ,\quad \mathcal{K}_{l+1} = \mathcal{K}_{l} + \sigma^2_w \frac{2}{\pi}\arcsin\left(\frac{2\alpha^2 \mathcal{K}_l}{1+2\alpha^2 \mathcal{K}_l}\right).
 \end{equation}
 $$
-The depth $l_*$, defined by $\alpha^2\mathcal{K}_{l_*} \sim 1$, separates two APJN growth regimes. For $\alpha^2\mathcal{K}_{l}\ll 1$, both $\mathcal{K}_l$ and $\mathcal{J}^{l,l_0}$ grow exponentially at the same rate: $\mathcal{K}_{l+1}\approx \left(1+4\alpha^2\sigma_w^2/\pi\right)\mathcal{K}_l$ and $\chi^l_\mathcal{J}\approx1+4\alpha^2\sigma^2_w/\pi$. For $\alpha^2\mathcal{K}_{l_*}\gg 1$, the growth of $\mathcal{J}^{l,l_0}$ is stretched-exponential, as discussed above. Assuming $\mathcal{K}_0=1$, the transition depth $l_*$ can be roughly estimated from:
+The depth $l_*$, defined by $\alpha^2\mathcal{K}_{l_*} \sim 1$, separates two APJN growth regimes. For $\alpha^2\mathcal{K}_{l}\ll 1$, both $\mathcal{K}_l$ and $\mathcal{J}^{l,l_0}$ grow exponentially at the same rate: $\mathcal{K}_{l+1}\approx \left(1+4\alpha^2\sigma_w^2/\pi\right)\mathcal{K}_l$ and $\chi^l_\mathcal{J}\approx1+4\alpha^2\sigma^2_w/\pi$. For $\alpha^2\mathcal{K}_{l}\gg 1$, the growth of $\mathcal{J}^{l,l_0}$ is stretched-exponential, as discussed above. Assuming $\mathcal{K}_0=1$, the transition depth $l_*$ can be roughly estimated from:
 <span id="eq-lstar-condition" class="eq-anchor"></span>
 $$
 \begin{equation}
@@ -211,7 +210,7 @@ The value of $l_*$ decreases as $\alpha$ increases: for large $\alpha$, the tran
 For a network of finite depth $L$, this implies that if $l_* > L$ (small $\alpha$) one observes only exponential growth; if $l_* < 1$ (large $\alpha$) one observes purely stretched-exponential growth; and if $1<l_*<L$ one observes a transition from exponential to stretched-exponential growth. Note, however, that a larger $\alpha$ always implies stronger signal amplification from the first layer to the last, i.e. a larger $\mathcal{J}^{l, 0}$ for any fixed $l$. [Fig. 2](#fig-theory-grads) shows $\mathcal{K}_l$ and $\mathcal{J}^{L, l}$ computed from the recursion in Eq. [(12)](#eq-derf-recursion) for Derf with multiple values of $\alpha$ ranging from $0.1$ to $1.9$; it also shows $\mathcal{K}_l$ and $\mathcal{J}^{L, l}$ for the pre-LN setup in Eq. [(10)](#eq-layernorm-critical) with $\phi = \text{id}$. 
 
 <figure id="fig-theory-grads" class="wide">
-  <img src="/figures/theory_grads.svg" alt="Transition depth as a function of alpha (placeholder)." />
+  <img src="/figures/theory_grads.svg" alt="APJN in toy model" />
 </figure>
 
 **Figure 2.** **(a)** Layer-wise component variance of the activation vector, $\mathcal{K}_l$, and **(b)** the APJN $\mathcal{J}^{L,l}$, which characterizes amplification of the squared gradient norm from layer $L$ to layer $l$ in the **toy model** [(1)](#eq-residual-update) with Derf and pre-LN. For Derf, for each value of $\alpha$, the black dot marks $l_*$, defined by $\alpha^2 \mathcal{K}_{l_*} = 1$, and indicates the transition to the stretched-exponential regime, i.e. the point at which $\mathcal{K}_l$ begins to grow linearly and $\mathcal{J}^{L, l}$ begins to grow stretched-exponentially (in the backward direction). The solid curve corresponds to the stretched-exponential regime ($l > l_*$), while the dashed curve corresponds to the exponential regime ($l < l_*$). The black curve shows the pre-LN setup with $\phi=\text{id}$.
@@ -220,13 +219,13 @@ For a network of finite depth $L$, this implies that if $l_* > L$ (small $\alpha
 ### 2.3 Empirical gradient norms in a Transformer with DyT
 
 We empirically measure activation and gradient norms at initialization in a ViT model with $128$ layers and hidden dimension $N=1024$, using a random batch from CIFAR-100, comparing DyT with different values of $\alpha$ to the pre-LN baseline. 
-[Fig. 3 (a)](#fig-vit-grads) shows the component-wise activation variance at each layer, $\mathcal{K}_l=\mathbb{E} \, N^{-1}\lVert h^l \rVert^2$. [Fig. 2 (b)](#fig-vit-grads) shows the layer-wise gradient amplification coefficient $\hat{\mathcal{J}}^{L,l}=\mathbb{E}\,\lVert \nabla_{h^l} \mathcal{L}\rVert^2/\mathbb{E}\lVert\nabla_{h^L} \mathcal{L}\rVert^2$. [Fig. 3 (c)](#fig-vit-grads) shows that the squared logarithm of $\hat{\mathcal{J}}^{l,0}=\mathbb{E}\,\lVert \nabla_{h^l} \mathcal{L}\rVert^2/\mathbb{E}\lVert\nabla_{h^0} \mathcal{L}\rVert^2$ is approximately linear in $l$, indicating stretched-exponential growth for larger $\alpha$. Averages are taken over the batch dimension and patches. 
+[Fig. 3 (a)](#fig-vit-grads) shows the component-wise activation variance at each layer, $\mathcal{K}_l=\mathbb{E} \, N^{-1}\lVert h^l \rVert^2$. [Fig. 3 (b)](#fig-vit-grads) shows the layer-wise gradient amplification coefficient $\hat{\mathcal{J}}^{L,l}=\mathbb{E}\,\lVert \nabla_{h^l} \mathcal{L}\rVert^2/\mathbb{E}\lVert\nabla_{h^L} \mathcal{L}\rVert^2$. [Fig. 3 (c)](#fig-vit-grads) shows that the squared logarithm of $\hat{\mathcal{J}}^{l,0}=\mathbb{E}\,\lVert \nabla_{h^l} \mathcal{L}\rVert^2/\mathbb{E}\lVert\nabla_{h^0} \mathcal{L}\rVert^2$ is approximately linear in $l$, indicating stretched-exponential growth for larger $\alpha$. Averages are taken over the batch dimension and patches. 
 
 Despite the presence of attention layers in ViT, which makes the analytic treatment more challenging, the qualitative gradient behavior agrees well with the simplified model studied above. In particular, matching the pre-LN gradient amplification behavior requires choosing a smaller $\alpha$. However, smaller values of $\alpha$ in DyT produce smaller updates to the residual stream. Thus, comparing the models purely by gradient amplification can be misleading.
 A perhaps more natural comparison is to align the pre-LN setup with DyT by matching the magnitude of the residual stream update. Concretely, one chooses $\alpha$ so that the $\mathcal{K}_l$ curves for pre-LN and DyT are as close as possible, which results in a large $\alpha$. Under this alignment, gradient amplification in DyT is much larger.  
 
 <figure id="fig-vit-grads" class="wide">
-  <img src="/figures/vit_grads.svg" alt="Transition depth as a function of alpha (placeholder)." />
+  <img src="/figures/vit_grads.svg" alt="Empirical measurements in a ViT model with 128 layers and hidden dimension N=1024" />
 </figure>
 
 
@@ -234,38 +233,38 @@ A perhaps more natural comparison is to align the pre-LN setup with DyT by match
 
 
 <span id="dyt-warmup"></span>
-### 2.4 DyT benefits from learning rate warm-up
+### 2.4 DyT benefits from learning rate warmup
 
-[@zhu2025transformersnormalization; @chen2025strongernormalizationfreetransformers] trained their DyT ViT models with learning-rate warm-up. We empirically show that, in addition to tuning initial $\alpha$, DyT Transformers may require careful tuning of the number of warm-up steps when $\alpha$ is large, whereas this is less important for the pre-LN variant. We train a ViT-B ($12$ layers, hidden dimension $N=768$) on CIFAR-100, with DyT and with pre-LN, varying the number of warm-up epochs, the learning rate, and the DyT parameter $\alpha$ at initialization. [Fig. 4 (a)](#fig-warmup) shows that reducing the number of warm-up epochs can destabilize training with DyT, while using too many warm-up epochs can slow training: the model without warm-up diverges, while the model with 3 warm-up epochs converges slightly faster than the model with 10 warm-up epochs. [Fig. 4 (b)](#fig-warmup) compares the DyT variant ($\alpha = 1$) to the pre-LN variant without warm-up as the learning rate is varied. The DyT model with $\alpha=1$ trains stably only at the lowest learning rate, and converges more slowly than the pre-LN baseline. 
+[@zhu2025transformersnormalization; @chen2025strongernormalizationfreetransformers] trained their DyT ViT models with learning-rate warmup. We empirically show that, in addition to tuning initial $\alpha$, DyT Transformers may require careful tuning of the number of warmup steps when $\alpha$ is large, whereas this is less important for the pre-LN variant. We train a ViT-B ($12$ layers, hidden dimension $N=768$) on CIFAR-100, with DyT and with pre-LN, varying the number of warmup epochs, the learning rate, and the DyT parameter $\alpha$ at initialization. [Fig. 4 (a)](#fig-warmup) shows that reducing the number of warmup epochs can destabilize training with DyT, while using too many warmup epochs can slow training: the model without warmup diverges, while the model with 3 warmup epochs converges slightly faster than the model with 10 warmup epochs. [Fig. 4 (b)](#fig-warmup) compares the DyT variant ($\alpha = 1$) to the pre-LN variant without warmup as the learning rate is varied. The DyT model with $\alpha=1$ trains stably only at the lowest learning rate, and converges more slowly than the pre-LN baseline. 
 As argued in the previous section, it is natural to align pre-LN with DyT based on the size of the residual stream updates; for this reason, we compare pre-LN to the DyT variant with the relatively large value $\alpha=1$ here.
-[Fig. 4 (c)](#fig-warmup) shows the test accuracy after 9 epochs as a function of $\alpha$ and the number of warm-up epochs, confirming that that warm-up becomes more important as $\alpha$ increases. Finally, [Fig. 4 (d)](#fig-warmup) shows that choosing $\alpha$ too small can also slow training, possibly due to the smaller residual stream updates.
+[Fig. 4 (c)](#fig-warmup) shows the test accuracy after 9 epochs as a function of $\alpha$ and the number of warmup epochs, confirming that warmup becomes more important as $\alpha$ increases. Finally, [Fig. 4 (d)](#fig-warmup) shows that choosing $\alpha$ too small can also slow training, possibly due to the smaller residual stream updates.
 
-The models were trained with AdamW ($\beta_1 = 0.9$, $\beta_2 = 0.999$, weigt decay $\lambda=0.05$) and a batch size of 256. After the initial warm-up, the learning rate was constant. 
+The models were trained with AdamW ($\beta_1 = 0.9$, $\beta_2 = 0.999$, weight decay $\lambda=0.05$) and a batch size of 256. After the initial warmup, the learning rate was constant. 
 
-Overall, a good initialization of $\alpha$ should avoid both extremes: values that are so small that training slows down and values that are so large that training becomes unstable. Increasing the number of warm-up epochs can help stabilize training at larger $\alpha$. The pre-LN setup exhibits better training stability across a wider range of learning rates than DyT, provided that $\alpha$ is chosen so as not to overly reduce the size of the residual updates relative to pre-LN.
+Overall, a good initialization of $\alpha$ should avoid both extremes: values that are so small that training slows down and values that are so large that training becomes unstable. Increasing the number of warmup epochs can help stabilize training at larger $\alpha$. The pre-LN setup exhibits better training stability across a wider range of learning rates than DyT, provided that $\alpha$ is chosen so as not to overly reduce the size of the residual updates relative to pre-LN.
 
 <figure id="fig-warmup" class="wide">
-  <img src="/figures/vit_warmup.svg" alt="Transition depth as a function of alpha (placeholder)." />
+  <img src="/figures/vit_warmup.svg" alt="Effect of learning-rate warmup, learning rate, and initialization \alpha on training stability in ViT-B (12 layers, N=768) on CIFAR-100 for DyT and pre-LN" />
 </figure>
 
-**Figure 4.**  Effect of learning-rate warm-up, learning rate, and initialization $\alpha$ on training stability in ViT-B (12 layers, $N=768$) on CIFAR-100 for DyT and pre-LN. **(a)** Warm-up sweep for DyT. **(b)** Learning-rate sweep comparing DyT ($\alpha=1$) to pre-LN without warm-up. **(c)** Test accuracy at epoch 9 versus $\alpha$ and warm-up epochs. **(d)** $\alpha$ sweep. At larger values of $\alpha$, DyT is more sensitive to warm-up and exhibits worse training stability than pre-LN across a range of learning rates.
+**Figure 4.**  Effect of learning-rate warmup, learning rate, and initialization $\alpha$ on training stability in ViT-B (12 layers, $N=768$) on CIFAR-100 for DyT and pre-LN. **(a)** Warmup sweep for DyT. **(b)** Learning-rate sweep comparing DyT ($\alpha=1$) to pre-LN without warmup. **(c)** Test accuracy at epoch 9 versus $\alpha$ and warmup epochs. **(d)** $\alpha$ sweep. At larger values of $\alpha$, DyT is more sensitive to warmup and exhibits worse training stability than pre-LN across a range of learning rates.
 
 <span id="conclusion"></span>
 ## 3. Conclusion
 
 Normalization-free Transformers that replace LayerNorm with saturating pointwise functions (DyT/Derf) trade computational simplicity for worse signal propagation across layers. In the mean-field picture, pre-LN residual networks are effectively critical at initialization: gradient norms grow only as a power law with depth. By contrast, DyT/Derf activation functions are subcritical in residual networks: they lead to stretched-exponential gradient amplification, which can make optimization more sensitive to hyperparameters.
 
-A key hyperparameter in DyT/Derf is the scale $\alpha$ at initialization. Larger $\alpha$ implies stronger overall gradient amplification from late to early layers, especially relative to the pre-LN architecture, which aligns with the empirical behavior we observe in ViT despite the theory ignoring attention blocks. This perspective also helps rationalize the training recipes in [@zhu2025transformersnormalization; @chen2025strongernormalizationfreetransformers]: smaller $\alpha$ improves training stability, deeper models require smaller $\alpha$, and learning-rate warm-up becomes increasingly important at larger $\alpha$.
+A key hyperparameter in DyT/Derf is the scale $\alpha$ at initialization. Larger $\alpha$ implies stronger overall gradient amplification from late to early layers, especially relative to the pre-LN architecture, which aligns with the empirical behavior we observe in ViT despite the theory ignoring attention blocks. This perspective also helps rationalize the training recipes in [@zhu2025transformersnormalization; @chen2025strongernormalizationfreetransformers]: smaller $\alpha$ improves training stability, deeper models require smaller $\alpha$, and learning-rate warmup becomes increasingly important at larger $\alpha$.
 
 **Practical takeaways.**
 
 - Pre-LN yields near-critical gradient propagation “by default” in deep residual stacks; DyT/Derf does not.
 
- - Increasing $\alpha$ increases end-to-end gradient amplification (and instability risk).
+- Increasing $\alpha$ increases end-to-end gradient amplification (and instability risk).
 
- - Depth matters: as depth increases, stable training tends to require smaller $\alpha$ and/or more careful lr schedule tuning.
+- Depth matters: as depth increases, stable training tends to require smaller $\alpha$ and/or more careful lr schedule tuning.
 
- - Warm-up for DyT/Derf can be a stabilizer, similar in spirit to warm-up in architectures with poor early gradient flow.
+- Warmup for DyT/Derf can be a stabilizer, similar in spirit to warmup in architectures with poor early gradient flow.
 
 <span id="references"></span>
 ## 4. References

@@ -4,13 +4,13 @@ date: 2025-01-02
 description: "What do normalization-free Transformers functions trade for computational simplicity?"
 ---
 
-## Abstract
+## Overview
 
 In this blog post, we connect recent work proposing LayerNorm-free Transformers [@zhu2025transformersnormalization; @chen2025strongernormalizationfreetransformers], in which (pre-)LayerNorm (LN) is replaced by pointwise activation functions such as $\tanh$ or $\text{erf}$, with the body of work studying criticality in wide neural networks at initialization. We note that, in residual networks, replacing LN with $\tanh$-like pointwise functions leads to subcritical behavior, whereas LayerNorm achieves criticality, as previously shown in [@doshi2023criticalinitializationwidedeep; @yang2017meanfieldresidualnetworks]. In practical terms, residual networks with Dynamic $\tanh$ (DyT) or Dynamic $\text{erf}$ (Derf) exhibit worse gradient propagation than pre-LN residual networks: gradients grow stretched-exponentially with depth (from the last layer to the first) rather than following a power law. This can cause training instability and may require more careful hyperparameter tuning to avoid divergence.
 
 We analyze how the initialization of the parameter $\alpha$, which appears in DyT/Derf, affects gradient propagation in the model proposed in [@doshi2023criticalinitializationwidedeep]. For networks of finite depth, smaller values of $\alpha$ give rise to exponentially growing gradients, whereas larger values of $\alpha$ give rise to stretched-exponentially growing gradients. Larger values of $\alpha$ lead to stronger gradient amplification, which may explain several empirical observations in DyT/Derf models: training is typically more stable at smaller $\alpha$, while overly large $\alpha$ can lead to divergence; deeper models require smaller $\alpha$. Moreover, if $\alpha$ is chosen so that the residual-update size in DyT/Derf matches that of pre-LN, DyT/Derf exhibits much stronger gradient amplification than pre-LN. We show that the qualitative gradient behavior in ViT aligns well with the theory, even though the theory does not account for attention blocks. In addition, we empirically show that DyT/Derf models initialized with larger $\alpha$ may benefit from learning rate warmup more than pre-LN.
 
-## How to read it?
+## How to read this post
 
 The blog contains the following sections:
 

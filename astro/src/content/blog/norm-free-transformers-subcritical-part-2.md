@@ -27,10 +27,16 @@ For a general introduction to the theory of signal propagation and the mean-fiel
 Let us assume that the transformer has $L$ transformer blocks, each consisting of attention followed by MLP with ReLU nonlinearity. For simplicity, we assume single-head attention – in case of multi-head attention the equations remain *exactly* identical. The dynamics of activation vectors of hidden dimension $d$ is given by the following equation:
 $$
 \begin{equation}
-\begin{split}
-& h^{l+1}_a= h^{l}_a + W_O^lW_V^l\sum_{b}A_{ab}^l\,\tilde h^l_b,\ l\ \text{even (attn)} \\
-& h^{l+1}_a= h^{l}_a + W_2^l\,\text{ReLU}(W_1^l \tilde h^l_a),\ l\ \text{odd (MLP)}
-\end{split}
+h^{l+1}_a
+=
+h^{l}_a
++
+\begin{cases}
+W_O^{l} W_V^{l} \displaystyle\sum_{b} A^{l}_{ab}\,\tilde h^{l}_{b},
+& l \text{ even (attn)},\\[6pt]
+W_2^{l}\,\mathrm{ReLU}\!\bigl(W_1^{l}\tilde h^{l}_{a}\bigr),
+& l \text{ odd (MLP)}.
+\end{cases}
 \end{equation}
 $$
 Note that here $l=\overline{0,\, 2L-1}$ enumerates layers (attention and MLP) rather than transformer blocks, which in this terminology consist of two layers. Here $\tilde h^l_a$ are normalized activation vectors via LayerNorm (in the next section, we will drop this normalization and replace it with the pointwise activation function $\text{Derf}$). The attention scores $A_{ab}^l$ between the $a$-th query and the $b$-th key are computed in the standard way:

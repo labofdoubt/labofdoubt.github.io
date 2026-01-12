@@ -26,7 +26,10 @@ export default defineConfig({
         rehypeCitation,
         {
           // Put BibTeX entries here:
-          bibliography: ["./src/content/references.bib"],
+          bibliography: [
+            "./src/content/references.bib",
+            "./src/content/references-norm-free-transformers-subcritical-part-2.bib",
+          ],
           // Numeric in-text citations like [1] and grouped like [1, 2, 3]
           csl: "./src/content/csl/numeric-brackets.csl",
           // Rendered bibliography will appear where you place: <div id="refs"></div>

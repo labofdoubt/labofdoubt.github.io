@@ -45,10 +45,10 @@ $$
 A^{l}_{ab}
 =
 \frac{
-\exp\!\left((W_Q^{l}h^{l}_{a})^\top (W_K^{l}h^{l}_{b})/\sqrt{d}\right)
+\exp\!\left((W_Q^{l}h^{l}_{a})\cdot(W_K^{l}h^{l}_{b})/\sqrt{d}\right)
 }{
 \sum_{c}
-\exp\!\left((W_Q^{l}h^{l}_{a})^\top (W_K^{l}h^{l}_{c})/\sqrt{d}\right)
+\exp\!\left((W_Q^{l}h^{l}_{a})\cdot(W_K^{l}h^{l}_{c})/\sqrt{d}\right)
 }.
 \end{equation}
 
@@ -69,9 +69,9 @@ q^{l}
 \begin{cases}
 (\sigma_{O}\sigma_{V})^{2}\,\tilde q^{l}\,
 \dfrac{
-1+\dfrac{\tilde p^{l}}{\tilde q^{l}}(n-1)\exp\!\bigl(\sigma_{QK}^{2}\tilde q^{l}(\tilde p^{l}-\tilde q^{l})\bigr)
+1+\dfrac{\tilde p^{l}}{\tilde q^{l}}(n-1)\exp\bigl(\sigma_{QK}^{2}\tilde q^{l}(\tilde p^{l}-\tilde q^{l})\bigr)
 }{
-1+(n-1)\exp\!\bigl(\sigma_{QK}^{2}\tilde q^{l}(\tilde p^{l}-\tilde q^{l})\bigr)
+1+(n-1)\exp \bigl(\sigma_{QK}^{2}\tilde q^{l}(\tilde p^{l}-\tilde q^{l})\bigr)
 },
 & l \text{ even (attn)},\\[8pt]
 \dfrac{1}{2}(\sigma_{W_2}\sigma_{W_1})^{2}\,\tilde q^{l},
@@ -84,9 +84,9 @@ p^{l}
 \begin{cases}
 (\sigma_{O}\sigma_{V})^{2}\,\tilde q^{l}\,
 \dfrac{
-1+\dfrac{\tilde p^{l}}{\tilde q^{l}}(n-1)\exp\!\bigl(\sigma_{QK}^{2}\tilde p^{l}(\tilde p^{l}-\tilde q^{l})\bigr)
+1+\dfrac{\tilde p^{l}}{\tilde q^{l}}(n-1)\exp \bigl(\sigma_{QK}^{2}\tilde p^{l}(\tilde p^{l}-\tilde q^{l})\bigr)
 }{
-1+(n-1)\exp\!\bigl(\sigma_{QK}^{2}\tilde p^{l}(\tilde p^{l}-\tilde q^{l})\bigr)
+1+(n-1)\exp \bigl(\sigma_{QK}^{2}\tilde p^{l}(\tilde p^{l}-\tilde q^{l})\bigr)
 },
 & l \text{ even (attn)},\\[8pt]
 (\sigma_{W_2}\sigma_{W_1})^{2}\,\kappa\left(\tilde p^{l}/{\tilde q^{l}}\right)\tilde q^{l},

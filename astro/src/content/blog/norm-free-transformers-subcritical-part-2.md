@@ -45,13 +45,30 @@ $$
 A_{ab}^l = \frac{e^{(W_Q^l h^l_a)\cdot(W_K^l h^l_b)/\sqrt{d}}}{\sum_c e^{(W_Q^l h^l_a)\cdot(W_K^l h^l_c)/\sqrt{d}}}.
 \end{equation}
 $$
+**Init**!
 
 With a number of simplifying assumptions about the statistics of attention scores (see Assumption 2 in []), one can solve for the dynamics of $q^l$ and $p^l$:
 $$
 \begin{equation}
 \begin{split}
-& q^{l+1} = q^l + (\sigma_{O}\sigma_{V})^2 \tilde q^l \frac{1+\frac{\tilde p^l}{\tilde q^l}(n-1)e^{\sigma_{QK}^2\tilde q^l(\tilde p^l-\tilde q^l)}}{1+(n-1)e^{\sigma_{QK}^2\tilde q^l(\tilde p^l-\tilde q^l)}},\ l\ \text{even (attn)} \\
-& q^{l+1} = q^l + \frac{1}{2}(\sigma_{W_2}\sigma_{W_1})^2 \tilde q^l
+& q^{l+1}
+=
+q^{l}
++
+\begin{cases}
+(\sigma_{O}\sigma_{V})^{2}\,\tilde q^{l}\,
+\dfrac{
+1+\dfrac{\tilde p^{l}}{\tilde q^{l}}(n-1)\exp\!\bigl(\sigma_{QK}^{2}\tilde q^{l}(\tilde p^{l}-\tilde q^{l})\bigr)
+}{
+1+(n-1)\exp\!\bigl(\sigma_{QK}^{2}\tilde q^{l}(\tilde p^{l}-\tilde q^{l})\bigr)
+},
+& l \text{ even (attn)},\\[8pt]
+\dfrac{1}{2}(\sigma_{W_2}\sigma_{W_1})^{2}\,\tilde q^{l},
+& l \text{ odd (MLP)}.
+\end{cases} \\
+&
+
+
 \end{split}
 \end{equation}
 $$

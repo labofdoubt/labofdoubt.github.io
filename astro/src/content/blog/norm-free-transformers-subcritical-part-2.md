@@ -42,8 +42,19 @@ $$
 Note that here $l=\overline{0,\, 2L-1}$ enumerates layers (attention and MLP) rather than transformer blocks, which in this terminology consist of two layers. Here $\tilde h^l_a$ are normalized activation vectors via LayerNorm (in the next section, we will drop this normalization and replace it with the pointwise activation function $\text{Derf}$). The attention scores $A_{ab}^l$ between the $a$-th query and the $b$-th key are computed in the standard way:
 $$
 \begin{equation}
-A_{ab}^l = \frac{e^{(W_Q^l h^l_a)\cdot(W_K^l h^l_b)/\sqrt{d}}}{\sum_c e^{(W_Q^l h^l_a)\cdot(W_K^l h^l_c)/\sqrt{d}}}.
+A^{l}_{ab}
+=
+\frac{
+\exp\!\left((W_Q^{l}h^{l}_{a})^\top (W_K^{l}h^{l}_{b})/\sqrt{d}\right)
+}{
+\sum_{c}
+\exp\!\left((W_Q^{l}h^{l}_{a})^\top (W_K^{l}h^{l}_{c})/\sqrt{d}\right)
+}.
 \end{equation}
+
+
+
+
 $$
 **Init**!
 
@@ -78,7 +89,7 @@ p^{l}
 1+(n-1)\exp\!\bigl(\sigma_{QK}^{2}\tilde p^{l}(\tilde p^{l}-\tilde q^{l})\bigr)
 },
 & l \text{ even (attn)},\\[8pt]
-(\sigma_{W_2}\sigma_{W_1})^{2}\,\kappa\left(\frac{\tilde p^{l}}{\tilde q^{l}}\right)\tilde q^{l},
+(\sigma_{W_2}\sigma_{W_1})^{2}\,\kappa\left(\tilde p^{l}/{\tilde q^{l}}\right)\tilde q^{l},
 & l \text{ odd (MLP)}.
 \end{cases}
 

@@ -66,7 +66,21 @@ q^{l}
 \dfrac{1}{2}(\sigma_{W_2}\sigma_{W_1})^{2}\,\tilde q^{l},
 & l \text{ odd (MLP)}.
 \end{cases} \\
-&
+& p^{l+1}
+=
+p^{l}
++
+\begin{cases}
+(\sigma_{O}\sigma_{V})^{2}\,\tilde q^{l}\,
+\dfrac{
+1+\dfrac{\tilde p^{l}}{\tilde q^{l}}(n-1)\exp\!\bigl(\sigma_{QK}^{2}\tilde p^{l}(\tilde p^{l}-\tilde q^{l})\bigr)
+}{
+1+(n-1)\exp\!\bigl(\sigma_{QK}^{2}\tilde p^{l}(\tilde p^{l}-\tilde q^{l})\bigr)
+},
+& l \text{ even (attn)},\\[8pt]
+(\sigma_{W_2}\sigma_{W_1})^{2}\,\kappa\left(\frac{\tilde p^{l}}{\tilde q^{l}}\right)\tilde q^{l},
+& l \text{ odd (MLP)}.
+\end{cases}
 
 
 \end{split}

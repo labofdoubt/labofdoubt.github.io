@@ -44,9 +44,9 @@ With a number of simplifying assumptions about the statistics of attention score
 $$
 \begin{equation}
 \begin{split}
-& q^{l+1} = q^l + (\sigma_{OV})^2 \tilde q^l \frac{1+\frac{\tilde p^l}{\tilde q^l}(n-1)e^{\sigma_{QK}^2\tilde q^l(\tilde p^l-\tilde q^l)}}{1+(n-1)e^{\sigma_{QK}^2\tilde q^l(\tilde p^l-\tilde q^l)}},\ l\ \text{even (attn)} \\
+& q^{l+1} = q^l + (\sigma_{O}\sigma_{V})^2 \tilde q^l \frac{1+\frac{\tilde p^l}{\tilde q^l}(n-1)e^{\sigma_{QK}^2\tilde q^l(\tilde p^l-\tilde q^l)}}{1+(n-1)e^{\sigma_{QK}^2\tilde q^l(\tilde p^l-\tilde q^l)}},\ l\ \text{even (attn)} \\
 q^{} \\
-&& a
+& q^{l+1} = q^l + \frac{1}{2}(\sigma_{W_2}\sigma_{W_1})^2 \tilde q^l
 \end{split}
 \end{equation}
 $$

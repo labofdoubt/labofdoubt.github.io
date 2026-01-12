@@ -16,14 +16,43 @@ Starting point: copied from `norm-free-transformers-subcritical.md`.
 
 In my previous blog post, I demonstrated empirically that normalization-free (DyT/Derf) transformers [] have worse gradient propagation properties than the standard pre-LN transformer—namely, they exhibit much stronger gradient amplification (approximately stretched-exponential, as opposed to the power-law growth in the pre-LN baseline). Although the theoretical analysis correctly characterized the gap between the models at a qualitative level, it did not account for the attention mechanism.
 
-In this blog post, I modify the theoretical argument by reintroducing attention, using the theoretical framework developed in [], which restricts the initial token configurations to permutation-invariant ones. We generalize the analysis in [] to normalization-free transformers by replacing the LayerNorms with point-wise activation functions. We show that attention does not change the mechanism that makes gradient propagation in normalization-free transformers inferior to that in pre-LN transformers. However, we can now demonstrate not only qualitative agreement between theoretical and empirical norms, gradients, and Jacobians, but also perfect quantitative agreement.
-
-## How to read this post
+In this blog post, I modify the theoretical argument by reintroducing attention, using the theoretical framework developed in [], which restricts the initial token configurations to permutation-invariant ones. We generalize the analysis in [] to normalization-free transformers by replacing the LayerNorms with point-wise activation functions. We show that attention does not change the mechanism that makes gradient propagation in normalization-free transformers inferior to that in pre-LN transformers. However, we can now demonstrate not only qualitative agreement between theoretical and empirical activation norms, gradients, and Jacobians, but also perfect quantitative agreement.
 
 ## Background
 
+For a general introduction to the theory of signal propagation and the mean-field formalism in the large-width limit at initialization, I refer the reader to my previous blog post.
+
+[] observed that, for permutation-equivariant transformers (i.e., with bidirectional attention and no positional encoding), the mean-field theory at initialization effectively reduces to the layer-to-layer evolution of just two degrees of freedom, provided the initial token configuration is permutation-invariant: the component variance of the activation vector at a given position, $q^l = \frac{1}{N_l} h^{l}_a \cdot h^{l}_b,\ a = b$, and the covariance between components of activation vectors at different positions, $p^l = \frac{1}{N_l} h^{l}_a \cdot h^{l}_b,\ a \ne b$. Here, $h^{l}_a$ is an $N_l$-dimensional activation vector at layer $l$ and position $a$. Geometrically, the former is the norm of the activation vector at a given position, normalized by $N_l$, while the latter is the normalized dot product between activation vectors at different positions.
+
+Let us assume that the transformer has $L$ transformer blocks, each consisting of attention followed by MLP with ReLU nonlinearity. For simplicity, we assume single-head attention – in case of multi-head attention the equations remain *exactly* identical. The dynamics of activation vectors of hidden dimension $d$ is given by the following equation:
+$$
+\begin{equation}
+\begin{split}
+& h^{l+1}_a= h^{l}_a + W_O^lW_V^l\sum_{b}A_{ab}^l\,\tilde h^l_b,\ l\ \text{even (attn)} \\
+& h^{l+1}_a= h^{l}_a + W_2^l\,\text{ReLU}(W_1^l \tilde h^l_a),\ l\ \text{odd (MLP)}
+\end{split}
+\end{equation}
+$$
+Note that here $l=\overline{0,\, 2L-1}$ enumerates layers (attention and MLP) rather than transformer blocks, which in this terminology consist of two layers. Here $\tilde h^l_a$ are normalized activation vectors via LayerNorm (in the next section, we will drop this normalization and replace it with the pointwise activation function $\text{Derf}$). The attention scores $A_{ab}^l$ between the $a$-th query and the $b$-th key are computed in the standard way:
+$$
+\begin{equation}
+A_{ab}^l = \frac{e^{(W_Q^l h^l_a)\cdot(W_K^l h^l_b)/\sqrt{d}}}{\sum_c e^{(W_Q^l h^l_a)\cdot(W_K^l h^l_c)/\sqrt{d}}}.
+\end{equation}
+$$
+
+With a number of simplifying assumptions about the statistics of attention scores (see Assumption 2 in []), one can solve for the dynamics of $q^l$ and $p^l$:
+$$
+\begin{equation}
+\begin{split}
+& q^{l+1} = q^l + (\sigma_{OV})^2 \tilde q^l \frac{1+\frac{\tilde p^l}{\tilde q^l}(n-1)e^{\sigma_{QK}^2\tilde q^l(\tilde p^l-\tilde q^l)}}{1+(n-1)e^{\sigma_{QK}^2\tilde q^l(\tilde p^l-\tilde q^l)}},\ l\ \text{even (attn)} \\
+q^{} \\
+&& a
+\end{split}
+\end{equation}
+$$
+
 <span id="references"></span>
-## 4. References
+## References
 
 <div id="refs"></div>
 

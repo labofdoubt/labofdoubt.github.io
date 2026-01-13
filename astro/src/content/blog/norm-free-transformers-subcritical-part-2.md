@@ -233,6 +233,19 @@ $$
 
 ### LayerNorm vs. Derf (experiments)
 
+<figure id="fig-vit-p-q" class="wide">
+  <img src="/figures/norm-free-transformers-subcritical-part-2/meanfield_vs_vit.svg" alt="MFT vs ViT: p, q, and p/q." />
+</figure>
+
+**Figure 1.** 
+
+
+<figure id="fig-vit-grads" class="wide">
+  <img src="/figures/norm-free-transformers-subcritical-part-2/jacobians_and_gradients.svg" alt="MFT vs ViT: APJN and gradients." />
+</figure>
+
+**Figure 2.** 
+
 
 
 <span id="references"></span>

@@ -112,7 +112,13 @@ q^{l}
 & l \text{ even (attn)},\\[8pt]
 \dfrac{1}{2}\sigma_{21}^2\,\tilde q^{l},
 & l \text{ odd (MLP)}.
-\end{cases} \\
+\end{cases}
+\end{split}
+\end{equation}
+$$
+$$
+\begin{equation}
+\begin{split}
 & p^{l+1}
 =
 p^{l}
@@ -199,15 +205,15 @@ We now have all the components to show that, for $\tanh$/$\text{erf}$-like norma
 
 This conclusion remains valid in the presence of attention. In the forward pass, the linear growth of $q^l$ persists because the attention contribution is bounded. In the backward pass, since $\tilde p^l \le \tilde q^l$, the denominator in Eq. () (attn) cannot suppress $\hat q^l$ by more than a factor of $n$. And even if it could, the MLP contribution remains the same as without attention, providing stretched-exponential growth for $\tanh$/$\text{erf}$-like normalization functions and power-law growth for LayerNorm.
 
-In fact, for $\text{Norm}=\text{LayerNorm}$ and $\text{Norm}(x)=\text{Derf}_\alpha(x)=\text{erf}(\alpha x)$, the quantities $\tilde q^l$, $\tilde p^l$, and $\hat q^l$ can be computed analytically. We provide these expressions here for completeness.
+In fact, for LayerNorm and Derf, the quantities $\tilde q^l$, $\tilde p^l$, and $\hat q^l$ can be computed analytically. We provide these expressions here for completeness.
 
-**LayerNorm**:
+$\text{Norm}=\text{LayerNorm}$:
 $$
 \begin{equation}
 \tilde q^l = 1,\qquad \tilde p^l = p^l/q^l,\qquad \hat q^l = 1/q^l.
 \end{equation}
 $$
-**Derf**:
+$\text{Norm}(x)=\text{Derf}_\alpha(x)=\text{erf}(\alpha x)$:
 $$
 \begin{equation}
 \begin{aligned}

@@ -20,7 +20,7 @@ In this blog post, I modify the theoretical argument by reintroducing attention,
 
 ## Main
 
-**Background**
+### Introduction
 
 For a general introduction to the theory of signal propagation and the mean-field formalism in the large-width limit at initialization, I refer the reader to my previous blog post.
 

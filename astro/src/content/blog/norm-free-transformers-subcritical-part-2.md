@@ -16,7 +16,7 @@ Starting point: copied from `norm-free-transformers-subcritical.md`.
 
 In my previous blog post, I demonstrated empirically that normalization-free (DyT/Derf) transformers [] have worse gradient propagation properties than the standard pre-LN transformer – namely, they exhibit much stronger gradient amplification (approximately stretched-exponential, as opposed to the power-law growth in the pre-LN baseline). Although the theoretical analysis correctly characterized the gap between the models at a qualitative level, it did not account for the attention mechanism.
 
-In this blog post, I modify the theoretical argument by reintroducing attention, using the theoretical framework developed in [], which restricts the initial token configurations to permutation-invariant ones. We generalize the analysis in [] to normalization-free transformers by replacing the LayerNorms with point-wise activation functions. We show that attention does not change the mechanism that makes gradient propagation in normalization-free transformers inferior to that in pre-LN transformers. However, we can now demonstrate not only qualitative agreement between theoretical and empirical activation norms, gradients, and Jacobians, but also perfect quantitative agreement.
+In this blog post, I modify the theoretical argument by reintroducing attention, using the theoretical framework developed in [], which restricts the initial token configurations to permutation-invariant ones. We generalize the analysis in [] to normalization-free transformers by replacing the LayerNorms with pointwise activation functions. We show that attention does not change the mechanism that makes gradient propagation in normalization-free transformers inferior to that in pre-LN transformers. However, we can now demonstrate not only qualitative agreement between theoretical and empirical activation norms, gradients, and Jacobians, but also perfect quantitative agreement.
 
 ## Main
 
@@ -24,7 +24,7 @@ In this blog post, I modify the theoretical argument by reintroducing attention,
 
 For a general introduction to the theory of signal propagation and the mean-field formalism in the large-width limit at initialization, I refer the reader to my previous blog post.
 
-[] observed that, for permutation-equivariant transformers (i.e., with bidirectional attention and no positional encoding), the mean-field theory at initialization effectively reduces to the layer-to-layer evolution of just two degrees of freedom, provided the initial token configuration is permutation-invariant: the component variance of the activation vector at a given position, $q^l = \frac{1}{d_l} h^{l}_a \cdot h^{l}_b,\ a = b$, and the covariance between components of activation vectors at different positions, $p^l = \frac{1}{d_l} h^{l}_a \cdot h^{l}_b,\ a \ne b$. Here, $h^{l}_a$ is an $d_l$-dimensional activation vector at layer $l$ and position $a$. Geometrically, the former is the squared norm of the activation vector at a given position, normalized by $d_l$, while the latter is the normalized dot product between activation vectors at different positions; consequently, $p^l/q^l$ is the cosine similarity between activation vectors at different positions.
+[] observed that, for permutation-equivariant transformers (i.e., with bidirectional attention and no positional encoding), the mean-field theory at initialization effectively reduces to the layer-to-layer evolution of just two degrees of freedom, provided the initial token configuration is permutation-invariant: the component variance of the activation vector at a given position, $q^l = \frac{1}{d} h^{l}_a \cdot h^{l}_a$, and the covariance between components of activation vectors at different positions, $p^l = \frac{1}{d} h^{l}_a \cdot h^{l}_b,\ a \ne b$. Here, $h^{l}_a$ is a $d$-dimensional activation vector at layer $l$ and position $a$. Geometrically, the former is the squared norm of the activation vector at a given position, normalized by $d$, while the latter is the normalized dot product between activation vectors at different positions; consequently, $p^l/q^l$ is the cosine similarity between activation vectors at different positions.
 
 The two main ingredients in the signal-propagation calculation at initialization are (co)variance propagation through pointwise nonlinearities and through linear layers. For the former, let us illustrate the calculation using a nonlinearity $\phi$ and two activation vectors at different positions, $h_1$ and $h_2$, whose component-wise covariance is given by
 $$
@@ -55,7 +55,7 @@ A subsequent linear transformation $W$ with zero mean and variance $\sigma_W^2/d
 
 **Transformer**
 
-Assume a Transformer with context size $n$ has $L$ transformer blocks, each applying (bidirectional) self-attention followed by a position-wise MLP with ReLU activation, with residual (skip) connections. The input to each residual branch is normalized – either with LayerNorm or with a pointwise transform such as DyT/Derf. For simplicity, we assume single-head attention – in case of multi-head attention the signal propagation equations remain *exactly* identical. The dynamics of activation vectors of hidden dimension $d$ are given by the following equation:
+Assume a Transformer with context size $n$ has $L$ layers, alternating (bidirectional) self-attention and a position-wise MLP with ReLU activation, with residual connections. The input to each residual branch is normalized – either with LayerNorm or with a pointwise transform such as DyT/Derf. For simplicity, we assume single-head attention – in case of multi-head attention the signal propagation equations remain *exactly* identical. The dynamics of activation vectors of hidden dimension $d$ are given by the following equation:
 $$
 \begin{equation}
 h^{l+1}_a
@@ -70,22 +70,22 @@ W_2^{l}\,\mathrm{ReLU}\!\bigl(W_1^{l}\tilde h^{l}_{a}\bigr),
 \end{cases}
 \end{equation}
 $$
-Note that here $l=\overline{0,\, 2L-1}$ indexes layers (attention and MLP) rather than transformer blocks; in this terminology, each transformer block consists of two layers. The vectors $\tilde h^l_a$ are normalized activation vectors:
+Note that here $l=\overline{0,\, L-1}$ indexes layers (attention and MLP) rather than transformer blocks. The vectors $\tilde h^l_a$ are normalized activation vectors:
 $$
 \begin{equation}
 \tilde h^l_a = \text{Norm}(h^l_a).
 \end{equation}
 $$
-Here $\text{Norm}$ may be $\text{LayerNorm}$ or a point-wise transform; for example, in the case of Derf with parameter $\alpha$, $\text{Norm}(x)=\text{erf}(\alpha x)$. The attention scores $A_{ab}^l$ between the $a$-th query and the $b$-th key are computed in the standard way:
+Here $\text{Norm}$ may be $\text{LayerNorm}$ or a pointwise transform; for example, in the case of Derf with parameter $\alpha$, $\text{Norm}(x)=\text{erf}(\alpha x)$. The attention scores $A_{ab}^l$ between the $a$-th query and the $b$-th key are computed in the standard way:
 $$
 \begin{equation}
 A^{l}_{ab}
 =
 \frac{
-\exp\!\left((W_Q^{l}\tilde h^{l}_{a})\cdot(W_K^{l}\tilde  h^{l}_{b})/\sqrt{d}\right)
+\exp\!\left((W_Q^{l}\tilde h^{l}_{a})\cdot(W_K^{l}\tilde h^{l}_{b})/\sqrt{d}\right)
 }{
 \sum_{c}
-\exp\!\left((W_Q^{l}\tilde  h^{l}_{a})\cdot(W_K^{l}\tilde  h^{l}_{c})/\sqrt{d}\right)
+\exp\!\left((W_Q^{l}\tilde  h^{l}_{a})\cdot(W_K^{l}\tilde h^{l}_{c})/\sqrt{d}\right)
 }.
 \end{equation}
 $$
@@ -195,13 +195,13 @@ $$
 This expression is somewhat vague for LayerNorm, so in that case we simply define $\hat q^l = 1/q^l$ to avoid confusion. For both the pointwise transform and LayerNorm, $\hat q^l$ arises from differentiating the normalization function.
 
 ### LayerNorm vs. Derf (theory)
-We now have all the components to show that, for $\tanh$/$\text{erf}$-like normalization functions, the APJN grows approximately as a stretched-exponential, i.e. like $e^{\sqrt{l/\lambda}}$ for some parameter $\lambda$, whereas in the standard pre-LN setup it grows approximately as a power law. The general argument is identical to that in my previous blog post [REF], so we omit the details here. The key idea is that in both cases $q^l\sim l$ for large $l$; however, for $\tanh$/$\text{erf}$-like normalization functions, $\hat q^l\sim (q^l)^{-1/2}\sim l^{-1/2}$, whereas for LayerNorm, $\hat q^l\sim (q^l)^{-1}\sim l^{-1}$. 
+We now have all the components to show that, for $\tanh$/$\text{erf}$-like normalization functions, the APJN grows approximately as a stretched-exponential, i.e. like $e^{\sqrt{l/\lambda}}$ for some parameter $\lambda$, whereas in the standard pre-LN setup it grows approximately as a power law. The general argument is identical to that in my previous blog post [REF], so we omit the details here. The key idea is that in both cases $q^l\sim l$ for large $l$; however, for $\tanh$/$\text{erf}$-like normalization functions, $\hat q^l\sim (q^l)^{-1/2}\sim l^{-1/2}$, whereas for LayerNorm, $\hat q^l= (q^l)^{-1}\sim l^{-1}$. This yields the stated behavior of the APJN.
 
-This conclusion remains valid in the presence of attention. In the forward pass, the linear growth of $q^l$ persists because the attention contribution is bounded. In the backward pass, since $\tilde p^l \le \tilde q^l$, the denominator in Eq. () (attn) can not suppress $\hat q^l$ by more than a factor of $n$. And even if it could, the MLP contribution remains the same as without attention, providing stretched-exponential growth for $\tanh$/$\text{erf}$-like normalization functions and power-law growth for LayerNorm.
+This conclusion remains valid in the presence of attention. In the forward pass, the linear growth of $q^l$ persists because the attention contribution is bounded. In the backward pass, since $\tilde p^l \le \tilde q^l$, the denominator in Eq. () (attn) cannot suppress $\hat q^l$ by more than a factor of $n$. And even if it could, the MLP contribution remains the same as without attention, providing stretched-exponential growth for $\tanh$/$\text{erf}$-like normalization functions and power-law growth for LayerNorm.
 
 In fact, for $\text{Norm}=\text{LayerNorm}$ and $\text{Norm}(x)=\text{Derf}_\alpha(x)=\text{erf}(\alpha x)$, the quantities $\tilde q^l$, $\tilde p^l$, and $\hat q^l$ can be computed analytically. We provide these expressions here for completeness.
 
-**Layernorm**:
+**LayerNorm**:
 $$
 \begin{equation}
 \tilde q^l = 1,\qquad \tilde p^l = p^l/q^l,\qquad \hat q^l = 1/q^l.
@@ -210,18 +210,23 @@ $$
 **Derf**:
 $$
 \begin{equation}
+\begin{aligned}
 \tilde q^{\,l}
-=\frac{2}{\pi}\arcsin\!\left(\frac{2\alpha^{2}q^{l}}{1+2\alpha^{2}q^{l}}\right),
-\quad
+&=\frac{2}{\pi}\arcsin\!\left(\frac{2\alpha^{2}q^{l}}{1+2\alpha^{2}q^{l}}\right),
+\qquad
 \tilde p^{\,l}
 =\frac{2}{\pi}\arcsin\!\left(\frac{2\alpha^{2}p^{l}}{1+2\alpha^{2}q^{l}}\right),
-\quad
+\\
 \hat q^{\,l}
-=\frac{4\alpha^{2}}{\pi}\,\frac{1}{\sqrt{1+4\alpha^{2}q^{l}}}.
+&=\frac{4\alpha^{2}}{\pi}\,\frac{1}{\sqrt{1+4\alpha^{2}q^{l}}}.
+\end{aligned}
 \end{equation}
+
 $$
 
 ### LayerNorm vs. Derf (experiment)
+
+
 
 <span id="references"></span>
 ## References

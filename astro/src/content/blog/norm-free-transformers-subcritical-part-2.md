@@ -93,6 +93,7 @@ All weights are initialized from zero-mean Gaussian distributions, with variance
 ### Forward signal propagation
 
 With a number of simplifying assumptions about the statistics of attention scores (see Assumption 2 in [@cowsik2024geometricdynamicssignalpropagation]), one can solve for the dynamics of $q^l$ and $p^l$:
+<span id="eq-q-recursion" class="eq-anchor"></span>
 $$
 \begin{equation}
 \begin{split}
@@ -114,6 +115,7 @@ q^{l}
 \end{split}
 \end{equation}
 $$
+<span id="eq-p-recursion" class="eq-anchor"></span>
 $$
 \begin{equation}
 \begin{split}
@@ -147,7 +149,7 @@ $$
 $$
 where $\Sigma^l_{11}=\Sigma^l_{22}=q^l$, $\Sigma^l_{12}=\Sigma^l_{21}=p^l$, and $\tilde\Sigma^l_{11}=\tilde\Sigma^l_{22}=\tilde q^l$, $\tilde\Sigma^l_{12}=\tilde\Sigma^l_{21}=\tilde p^l$.
 
-The coefficients of $1/2$ and $\kappa\left(\tilde p^{l}/{\tilde q^{l}}\right)$ in the MLP expressions in Eq. () arise from covariance propagation through the ReLU nonlinearity, where $\kappa$ is given by [REF?]
+The coefficients of $1/2$ and $\kappa\left(\tilde p^{l}/{\tilde q^{l}}\right)$ in the MLP expressions in Eqns. [(6)](#eq-q-recursion) and [(7)](#eq-p-recursion) arise from covariance propagation through the ReLU nonlinearity, where $\kappa$ is given by [REF?]
 $$
 \begin{equation}
 \kappa(\rho)
@@ -175,6 +177,7 @@ $$
 \end{equation}
 $$
 Equivalently, $\mathcal{J}^{l+1, l_0} = \chi^l_{\mathcal{J}} \mathcal{J}^{l, l_0}$ for $l \ge l_0$. In our setup, 
+<span id="eq-chi-J" class="eq-anchor"></span>
 $$
 \begin{equation}
 \chi^l_{\mathcal J}
@@ -201,7 +204,7 @@ This expression is somewhat vague for LayerNorm, so in that case we simply defin
 ### LayerNorm vs. Derf (theory)
 We now have all the components to show that, for $\tanh$/$\text{erf}$-like normalization functions, the APJN grows approximately as a stretched-exponential, i.e. like $e^{\sqrt{l/\lambda}}$ for some parameter $\lambda$, whereas in the standard pre-LN setup it grows approximately as a power law. The general argument is identical to that in my [previous blog post](/blog/norm-free-transformers-subcritical/), so we omit the details here. The key idea is that in both cases $q^l\sim l$ for large $l$; however, for $\tanh$/$\text{erf}$-like normalization functions, $\hat q^l\sim (q^l)^{-1/2}\sim l^{-1/2}$, whereas for LayerNorm, $\hat q^l= (q^l)^{-1}\sim l^{-1}$. This yields the stated behavior of the APJN.
 
-This conclusion remains valid in the presence of attention. In the forward pass, the linear growth of $q^l$ persists because the attention contribution is bounded. In the backward pass, since $\tilde p^l \le \tilde q^l$, the denominator in Eq. () (attn) cannot suppress $\hat q^l$ by more than a factor of $n$. And even if it could, the MLP contribution remains the same as without attention, providing stretched-exponential growth for $\tanh$/$\text{erf}$-like normalization functions and power-law growth for LayerNorm.
+This conclusion remains valid in the presence of attention. In the forward pass, the linear growth of $q^l$ persists because the attention contribution is bounded. In the backward pass, since $\tilde p^l \le \tilde q^l$, the denominator in Eq. [(12)](#eq-chi-J) (attn) cannot suppress $\hat q^l$ by more than a factor of $n$. And even if it could, the MLP contribution remains the same as without attention, providing stretched-exponential growth for $\tanh$/$\text{erf}$-like normalization functions and power-law growth for LayerNorm.
 
 In fact, for LayerNorm and Derf, the quantities $\tilde q^l$, $\tilde p^l$, and $\hat q^l$ can be computed analytically. We provide these expressions here for completeness.
 

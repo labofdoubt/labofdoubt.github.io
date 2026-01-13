@@ -199,20 +199,25 @@ We now have all the components to show that, for $\tanh$/$\text{erf}$-like norma
 
 This conclusion remains valid in the presence of attention. In the forward pass, the linear growth of $q^l$ persists because the attention contribution is bounded. In the backward pass, since $\tilde p^l \le \tilde q^l$, the denominator in Eq. () (attn) can not suppress $\hat q^l$ by more than a factor of $n$. And even if it could, the MLP contribution remains the same as without attention, providing stretched-exponential growth for $\tanh$/$\text{erf}$-like normalization functions and power-law growth for LayerNorm.
 
-In fact, for $\text{Norm}=\text{LayerNorm}$ and $\text{Norm}(x)=\text{Derf}_\alpha(x)=\text{erf}(\alpha x)$, the quantities $\tilde q^l$, $\tilde p^l$, and $\hat q^l$ can be computed analytically. We provide them here for completeness. 
+In fact, for $\text{Norm}=\text{LayerNorm}$ and $\text{Norm}(x)=\text{Derf}_\alpha(x)=\text{erf}(\alpha x)$, the quantities $\tilde q^l$, $\tilde p^l$, and $\hat q^l$ can be computed analytically. We provide these expressions here for completeness.
+
 **Layernorm**:
 $$
 \begin{equation}
-\tilde q^l = 1,\qquad \tilde p^l = p^l/q^l,\qquad \hat q^l = 1/q^l
+\tilde q^l = 1,\qquad \tilde p^l = p^l/q^l,\qquad \hat q^l = 1/q^l.
 \end{equation}
 $$
-
+**Derf**:
 $$
 \begin{equation}
 \tilde q^{\,l}
-=\frac{2}{\pi}\arcsin\!\left(\frac{2\alpha^{2}q^{l}}{1+2\alpha^{2}q^{l}}\right),\qquad
+=\frac{2}{\pi}\arcsin\!\left(\frac{2\alpha^{2}q^{l}}{1+2\alpha^{2}q^{l}}\right),
+\quad
 \tilde p^{\,l}
-=\frac{2}{\pi}\arcsin\!\left(\frac{2\alpha^{2}p^{l}}{1+2\alpha^{2}q^{l}}\right),\qquad 
+=\frac{2}{\pi}\arcsin\!\left(\frac{2\alpha^{2}p^{l}}{1+2\alpha^{2}q^{l}}\right),
+\quad
+\hat q^{\,l}
+=\frac{4\alpha^{2}}{\pi}\,\frac{1}{\sqrt{1+4\alpha^{2}q^{l}}}.
 \end{equation}
 $$
 

@@ -226,6 +226,7 @@ $$
 This expression is somewhat vague for LayerNorm, so in that case we simply define $\hat q^l = 1/q^l$ to avoid confusion. The quantity $\hat q^l$ arises from differentiating the normalization, both for the pointwise transform and for LayerNorm.
 
 In fact, for LayerNorm and Derf, the quantities $\tilde q^l$, $\tilde p^l$, and $\hat q^l$ can be computed analytically. We provide these expressions here for completeness.
+
 **LayerNorm**:
 $$
 \begin{equation}

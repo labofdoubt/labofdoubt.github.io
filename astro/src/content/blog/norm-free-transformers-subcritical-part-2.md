@@ -1,7 +1,7 @@
 ---
 title: "Normalization-free transformers are subcritical. Part 2."
 date: 2026-01-12
-description: "Part 2 (draft/unlisted)."
+description: ""
 unlisted: true
 ---
 
@@ -18,11 +18,33 @@ In my [previous blog post](/blog/norm-free-transformers-subcritical/), I demonst
 
 In this blog post, I modify the theoretical argument by reintroducing attention, using the theoretical framework developed in [@cowsik2024geometricdynamicssignalpropagation], which restricts the initial token configurations to permutation-invariant ones. We generalize the analysis in [@cowsik2024geometricdynamicssignalpropagation] to normalization-free transformers by replacing the LayerNorms with pointwise activation functions. We show that attention does not change the mechanism that makes gradient propagation in normalization-free transformers inferior to that in pre-LN transformers. However, we can now demonstrate not only qualitative agreement between theoretical and empirical activation norms, gradients, and Jacobians, but also perfect quantitative agreement.
 
-## Main
+## How to read this post
 
+This post contains the following sections:
+
+- **1.** [Mean-field framework](#mean-field-framework)
+  - **1.1** [Introduction](#mft-introduction)
+  - **1.2** [Setup](#mft-setup)
+  - **1.3** [Forward signal propagation](#mft-forward-signal-propagation)
+  - **1.4** [Backward gradient propagation](#mft-backward-gradient-propagation)
+
+- **2.** [LayerNorm vs. Derf/DyT](#layernorm-vs-derf)
+  - **2.1** [Theory](#layernorm-vs-derf-theory)
+  - **2.2** [Experiments](#layernorm-vs-derf-experiments)
+
+- **3.** [References](#references)
+
+Readers interested primarily in why normalization-free Transformers have worse gradient propagation may want to proceed to Section [**2.1**](#layernorm-vs-derf-theory), which relies on results from Sections [**1.3**](#forward-signal-propagation) and [**1.4**](#backward-gradient-propagation).
+
+Section [**1.1**](#introduction) overviews mean-field theory at initialization, which tracks the dynamics of a pair of activation vectors. Section [**1.2**](#setup) introduces the notation for the Transformer. Sections [**1.3**](#forward-signal-propagation) and [**1.4**](#backward-gradient-propagation) extend the mean-field recursion relations of [@cowsik2024geometricdynamicssignalpropagation] to normalization-free transformers. Section [**2.1**](#layernorm-vs-derf-theory) uses these relations to compare gradient propagation for LayerNorm versus $\tanh$/$\mathrm{erf}$-like pointwise normalizations, and Section [**2.2**](#layernorm-vs-derf-experiments) validates the theory against measurements in a ViT.
+
+<span id="mean-field-framework"></span>
+## Mean-field framework
+
+<span id="mft-introduction"></span>
 ### Introduction
 
-For a general introduction to the theory of signal propagation and the mean-field formalism in the large-width limit at initialization, I refer the reader to my previous blog post.
+For a general introduction to the theory of signal propagation and the mean-field formalism in the large-width limit at initialization, I refer the reader to my [previous blog post](/blog/norm-free-transformers-subcritical/).
 
 [@cowsik2024geometricdynamicssignalpropagation] observed that, for permutation-equivariant transformers (i.e., with bidirectional attention and no positional encoding), the mean-field theory at initialization effectively reduces to the layer-to-layer evolution of just two degrees of freedom, provided the initial token configuration is permutation-invariant: the component variance of the activation vector at a given position, $q^l = \frac{1}{d} h^{l}_a \cdot h^{l}_a$, and the covariance between components of activation vectors at different positions, $p^l = \frac{1}{d} h^{l}_a \cdot h^{l}_b,\ a \ne b$. Here, $h^{l}_a$ is a $d$-dimensional activation vector at layer $l$ and position $a$. Geometrically, the former is the squared norm of the activation vector at a given position, normalized by $d$, while the latter is the normalized dot product between activation vectors at different positions; consequently, $p^l/q^l$ is the cosine similarity between activation vectors at different positions.
 
@@ -52,6 +74,7 @@ A subsequent linear transformation $W$ with zero mean and variance $\sigma_W^2/d
 \sim \mathcal{N}\!\left(0,\; \sigma_W^2\,\Sigma^\phi\right)$.
 
 ### Setup
+<span id="mft-setup"></span>
 
 Assume a Transformer with context size $n$ has $L$ layers, alternating (bidirectional) self-attention and a position-wise MLP with ReLU activation, with residual connections. The input to each residual branch is normalized – either with LayerNorm or with a pointwise transform such as DyT/Derf. For simplicity, we assume single-head attention – in case of multi-head attention the signal propagation equations remain *exactly* identical. The dynamics of activation vectors of hidden dimension $d$ are given by the following equation:
 $$
@@ -91,6 +114,7 @@ $$
 All weights are initialized from zero-mean Gaussian distributions, with variances that are shared across Transformer blocks: in the attention layer, $W_Q$, $W_K$, $W_O$, $W_V$ have component-wise variances $\sigma^2_Q/d_{in}$, $\sigma^2_K/d_{in}$, $\sigma^2_O/d_{in}$, and $\sigma^2_V/d_{in}$, respectively; in the MLP layer, $W_1$ and $W_2$ have component-wise variances $\sigma^2_1/d_{in}$ and $\sigma^2_2/d_{in}$. Here $d_{in}$ denotes the input dimension of the layer.
 
 ### Forward signal propagation
+<span id="mft-forward-signal-propagation"></span>
 
 With a number of simplifying assumptions about the statistics of attention scores (see Assumption 2 in [@cowsik2024geometricdynamicssignalpropagation]), one can solve for the dynamics of $q^l$ and $p^l$:
 <span id="eq-q-recursion" class="eq-anchor"></span>
@@ -158,6 +182,7 @@ $$
 $$
 
 ### Backward gradient propagation
+<span id="mft-backward-gradient-propagation"></span>
 
 To characterize backward gradient propagation between layers $L$ and $l$ with $L > l$, we use the Frobenius norm of the Jacobian ${J}^{L, l}=\partial h^{L}/\partial h^{l}$, averaged over weight initializations – the **APJN** (averaged partial Jacobian norm) [@doshi2023criticalinitializationwidedeep]:
 $$
@@ -201,8 +226,11 @@ $$
 $$
 This expression is somewhat vague for LayerNorm, so in that case we simply define $\hat q^l = 1/q^l$ to avoid confusion. The quantity $\hat q^l$ arises from differentiating the normalization, both for the pointwise transform and for LayerNorm.
 
-### LayerNorm vs. Derf (theory)
-We now have all the components to show that, for $\tanh$/$\text{erf}$-like normalization functions, the APJN grows approximately as a stretched-exponential, i.e. like $e^{\sqrt{l/\lambda}}$ for some parameter $\lambda$, whereas in the standard pre-LN setup it grows approximately as a power law. The general argument is identical to that in my [previous blog post](/blog/norm-free-transformers-subcritical/), so we omit the details here. The key idea is that in both cases $q^l\sim l$ for large $l$; however, for $\tanh$/$\text{erf}$-like normalization functions, $\hat q^l\sim (q^l)^{-1/2}\sim l^{-1/2}$, whereas for LayerNorm, $\hat q^l= (q^l)^{-1}\sim l^{-1}$. This implies the stated behavior of the APJN.
+<span id="layernorm-vs-derf"></span>
+## LayerNorm vs. Derf/DyT
+<span id="layernorm-vs-derf-theory"></span>
+### Theory
+We now have all the components to show that, for $\tanh$/$\text{erf}$-like normalization functions, the APJN grows approximately as a stretched-exponential, i.e. like $e^{\sqrt{l/\lambda}}$ for some parameter $\lambda$, whereas in the standard pre-LN setup it grows approximately as a power law. The general argument is identical to that in my [previous blog post](/blog/norm-free-transformers-subcritical/), so we omit the details here. The key idea is that in both cases $q^l\sim l$ for large $l$; however, for $\tanh$/$\text{erf}$-like normalization functions, $\hat q^l\sim (q^l)^{-1/2}\sim l^{-1/2}$, whereas for LayerNorm, $\hat q^l= (q^l)^{-1}\sim l^{-1}$. This implies the stated behavior of the APJN, which is given by a product of the $\chi^l_{\mathcal{J}}$ factors.
 
 This conclusion remains valid in the presence of attention. In the forward pass, the linear growth of $q^l$ persists because the attention contribution is bounded. In the backward pass, since $\tilde p^l \le \tilde q^l$, the denominator in Eq. [(12)](#eq-chi-J) (attn) cannot suppress $\hat q^l$ by more than a factor of $n$. And even if it could, the MLP contribution remains the same as without attention, providing stretched-exponential growth for $\tanh$/$\text{erf}$-like normalization functions and power-law growth for LayerNorm.
 
@@ -231,7 +259,8 @@ $$
 
 $$
 
-### LayerNorm vs. Derf (experiments)
+<span id="layernorm-vs-derf-experiments"></span>
+### Experiments
 [Fig. 1](#fig-vit-p-q) compares quantities $q^l$ and $p^l$ computed from the mean-field analysis (left) with those estimated from a ViT forward pass (right), where the input to the first Transformer block is a generated permutation-invariant token configuration. In both cases, $q^0=1$ and $p^0=0.4$; the number of layers $L$ is $128$, and the context size $n$ is $197$. The ViT model is initialized as in `vit_large_patch16_224`, with hidden dimension $d=1024$ and component-wise weight standard deviations equal to $0.02$. To match its behavior, in mean-field analysis we set  $\sigma_1=\sigma_O=\sigma_V=\sigma_Q=\sigma_K=0.64$ and $\sigma_2=1.28$.
 
 [Fig. 2](#fig-vit-grads) (left) compares APJN computed from mean-field analysis and from the ViT model via Hutchinson’s method [@doshi2023criticalinitializationwidedeep]. [Fig. 2](#fig-vit-grads) (right) shows gradient amplification coefficients estimated from the ViT backward pass on a batch of permutation-invariant token configurations. The observed gradient amplification is slightly larger than the APJN, likely because the gradients lie in a subspace corresponding to larger-than-average Jacobian eigenvalues.

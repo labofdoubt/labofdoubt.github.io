@@ -149,7 +149,7 @@ $$
 $$
 where $\Sigma^l_{11}=\Sigma^l_{22}=q^l$, $\Sigma^l_{12}=\Sigma^l_{21}=p^l$, and $\tilde\Sigma^l_{11}=\tilde\Sigma^l_{22}=\tilde q^l$, $\tilde\Sigma^l_{12}=\tilde\Sigma^l_{21}=\tilde p^l$.
 
-The coefficients of $1/2$ and $\kappa\left(\tilde p^{l}/{\tilde q^{l}}\right)$ in the MLP expressions in Eqns. [(6)](#eq-q-recursion) and [(7)](#eq-p-recursion) arise from covariance propagation through the ReLU nonlinearity, where $\kappa$ is given by [REF?]
+The coefficients of $1/2$ and $\kappa\left(\tilde p^{l}/{\tilde q^{l}}\right)$ in the MLP expressions in Eqns. [(6)](#eq-q-recursion) and [(7)](#eq-p-recursion) arise from covariance propagation through the ReLU nonlinearity, where $\kappa$ is given by
 $$
 \begin{equation}
 \kappa(\rho)
@@ -202,7 +202,7 @@ $$
 This expression is somewhat vague for LayerNorm, so in that case we simply define $\hat q^l = 1/q^l$ to avoid confusion. The quantity $\hat q^l$ arises from differentiating the normalization, both for the pointwise transform and for LayerNorm.
 
 ### LayerNorm vs. Derf (theory)
-We now have all the components to show that, for $\tanh$/$\text{erf}$-like normalization functions, the APJN grows approximately as a stretched-exponential, i.e. like $e^{\sqrt{l/\lambda}}$ for some parameter $\lambda$, whereas in the standard pre-LN setup it grows approximately as a power law. The general argument is identical to that in my [previous blog post](/blog/norm-free-transformers-subcritical/), so we omit the details here. The key idea is that in both cases $q^l\sim l$ for large $l$; however, for $\tanh$/$\text{erf}$-like normalization functions, $\hat q^l\sim (q^l)^{-1/2}\sim l^{-1/2}$, whereas for LayerNorm, $\hat q^l= (q^l)^{-1}\sim l^{-1}$. This yields the stated behavior of the APJN.
+We now have all the components to show that, for $\tanh$/$\text{erf}$-like normalization functions, the APJN grows approximately as a stretched-exponential, i.e. like $e^{\sqrt{l/\lambda}}$ for some parameter $\lambda$, whereas in the standard pre-LN setup it grows approximately as a power law. The general argument is identical to that in my [previous blog post](/blog/norm-free-transformers-subcritical/), so we omit the details here. The key idea is that in both cases $q^l\sim l$ for large $l$; however, for $\tanh$/$\text{erf}$-like normalization functions, $\hat q^l\sim (q^l)^{-1/2}\sim l^{-1/2}$, whereas for LayerNorm, $\hat q^l= (q^l)^{-1}\sim l^{-1}$. This implies the stated behavior of the APJN.
 
 This conclusion remains valid in the presence of attention. In the forward pass, the linear growth of $q^l$ persists because the attention contribution is bounded. In the backward pass, since $\tilde p^l \le \tilde q^l$, the denominator in Eq. [(12)](#eq-chi-J) (attn) cannot suppress $\hat q^l$ by more than a factor of $n$. And even if it could, the MLP contribution remains the same as without attention, providing stretched-exponential growth for $\tanh$/$\text{erf}$-like normalization functions and power-law growth for LayerNorm.
 
@@ -232,19 +232,23 @@ $$
 $$
 
 ### LayerNorm vs. Derf (experiments)
+[Fig. 1](#fig-vit-p-q) compares quantities $q^l$ and $p^l$ computed from the mean-field analysis (left) with those estimated from a ViT forward pass (right), where the input to the first Transformer block is a generated permutation-invariant token configuration. In both cases, $q^0=1$ and $p^0=0.4$; the number of layers $L$ is $128$, and the context size $n$ is $197$. The ViT model is initialized as in `vit_large_patch16_224`, with hidden dimension $d=1024$ and component-wise weight standard deviations equal to $0.02$. To match its behavior, in mean-field analysis we set  $\sigma_1=\sigma_O=\sigma_V=\sigma_Q=\sigma_K=0.64$ and $\sigma_2=1.28$.
+
+[Fig. 2](#fig-vit-grads) (left) compares APJN computed from mean-field analysis and from the ViT model via Hutchinson’s method [@doshi2023criticalinitializationwidedeep]. [Fig. 2](#fig-vit-grads) (right) shows gradient amplification coefficients estimated from the ViT backward pass on a batch of permutation-invariant token configurations. The observed gradient amplification is slightly larger than the APJN, likely because the gradients lie in a subspace corresponding to larger-than-average Jacobian eigenvalues.
+
+Overall, matching the pre-LN gradient amplification behavior requires choosing a smaller $\alpha$ in the Derf model. However, smaller values $\alpha$ in Derf also yields smaller updates to the residual stream. If instead we try to align pre-LN and Derf by matching the magnitude of the residual-stream update, then the gradient amplification in Derf becomes much larger. Concretely, choosing $\alpha$ so that the $q_l$ curves for pre-LN and Derf are as close as possible leads to a large $\alpha$.   
 
 <figure id="fig-vit-p-q" class="wide">
   <img src="/figures/norm-free-transformers-subcritical-part-2/meanfield_vs_vit.svg" alt="MFT vs ViT: p, q, and p/q." />
 </figure>
 
-**Figure 1.** 
-
+**Figure 1.** (a) The component-wise variance of the activation vector at a given position, $q^l$, (b) the covariance between components of activation vectors at different positions, $p^l$, and (c) their ratio, $p^l/q^l$. Left: mean-field analysis; right: values estimated from a ViT forward pass on a batch of permutation-invariant token configurations with the same initial value of $p$. The black solid line indicates the pre-LN baseline. Colored lines show Derf variants with varying values of $\alpha$.
 
 <figure id="fig-vit-grads" class="wide">
   <img src="/figures/norm-free-transformers-subcritical-part-2/jacobians_and_gradients.svg" alt="MFT vs ViT: APJN and gradients." />
 </figure>
 
-**Figure 2.** 
+**Figure 2.** Left: APJN. Solid lines indicate values computed from mean-field theory (MFT). Crosses indicate values obtained from a ViT via Hutchinson’s method [@doshi2023criticalinitializationwidedeep]. Right: gradient amplification coefficients estimated from a ViT backward pass on a batch of permutation-invariant token configurations.
 
 
 

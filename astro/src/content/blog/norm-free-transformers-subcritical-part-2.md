@@ -265,7 +265,7 @@ We compute the layer-wise (co)variances $q^l$ and $p^l$, as well as the APJN, bo
 
 [Fig. 2](#fig-vit-grads) (left) compares APJN computed from mean-field analysis and from the ViT model via Hutchinson’s method [@doshi2023criticalinitializationwidedeep]. [Fig. 2](#fig-vit-grads) (right) shows gradient amplification coefficients estimated from the ViT backward pass on a batch of permutation-invariant token configurations. The observed gradient amplification is slightly larger than the APJN, likely because the gradients lie in a subspace corresponding to larger-than-average Jacobian eigenvalues.
 
-Overall, matching the pre-LN gradient amplification behavior requires choosing a smaller $\alpha$ in the Derf model. However, smaller values $\alpha$ in Derf also yields smaller updates to the residual stream. If instead we try to align pre-LN and Derf by matching the magnitude of the residual-stream update, then the gradient amplification in Derf becomes much larger. Concretely, choosing $\alpha$ so that the $q_l$ curves for pre-LN and Derf are as close as possible leads to a large $\alpha$.   
+Overall, matching the pre-LN gradient amplification behavior requires choosing a smaller $\alpha$ in the Derf model. However, smaller values of $\alpha$ in Derf also yield smaller updates to the residual stream. If instead we try to align pre-LN and Derf by matching the magnitude of the residual-stream update, then the gradient amplification in Derf becomes much larger. Concretely, choosing $\alpha$ so that the $q_l$ curves for pre-LN and Derf are as close as possible leads to a large $\alpha$.   
 
 <figure id="fig-vit-p-q" class="wide">
   <img src="/figures/norm-free-transformers-subcritical-part-2/meanfield_vs_vit_qp.svg" alt="MFT vs ViT: p, q, and p/q." />

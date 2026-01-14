@@ -50,6 +50,28 @@ a:hover {
 }
 
 /* In-text references (figures/equations/citations): light blue and clearly clickable */
+/* Any in-page anchor links (TOC, section links, fig/eq refs) */
+main a[href^="#"] {
+  color: var(--ref-link);
+  text-decoration: none;
+}
+
+main a[href^="#"]:hover {
+  color: var(--ref-link-hover);
+  text-decoration: none;
+}
+
+/* Internal site links (absolute-path links within the same site) */
+main a[href^="/"]:not([href^="//"]) {
+  color: var(--ref-link);
+  text-decoration: none;
+}
+
+main a[href^="/"]:not([href^="//"]):hover {
+  color: var(--ref-link-hover);
+  text-decoration: none;
+}
+
 main a[href^="#fig-"],
 main a[href^="#eq-"],
 main a[href^="#eq:"],

@@ -1,8 +1,7 @@
 ---
-title: "Normalization-free transformers are subcritical. Part 2."
+title: "Normalization-free transformers are subcritical, Part 2."
 date: 2026-01-12
-description: ""
-unlisted: true
+description: "Why attention doesn’t fix gradient amplification in normalization-free Transformers."
 ---
 
 <!--

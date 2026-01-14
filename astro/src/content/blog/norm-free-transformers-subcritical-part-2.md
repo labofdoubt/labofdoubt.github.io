@@ -259,6 +259,8 @@ This conclusion remains valid in the presence of attention. In the forward pass,
 
 <span id="layernorm-vs-derf-experiments"></span>
 ### Experiments
+We compute the layer-wise (co)variances $q^l$ and $p^l$, as well as the APJN, both from the mean-field analysis and by estimating them from the ViT model, for the pre-LN baseline and for Derf with various values of the parameter $\alpha$. 
+
 [Fig. 1](#fig-vit-p-q) compares quantities $q^l$ and $p^l$ computed from the mean-field analysis (left) with those estimated from a ViT forward pass (right), where the input to the first Transformer block is a generated permutation-invariant token configuration. In both cases, $q^0=1$ and $p^0=0.4$; the number of layers $L$ is $128$, and the context size $n$ is $197$. The ViT model is initialized as in `vit_large_patch16_224`, with hidden dimension $d=1024$ and component-wise weight standard deviations equal to $0.02$. To match its behavior, in mean-field analysis we set  $\sigma_1=\sigma_O=\sigma_V=\sigma_Q=\sigma_K=0.64$ and $\sigma_2=1.28$.
 
 [Fig. 2](#fig-vit-grads) (left) compares APJN computed from mean-field analysis and from the ViT model via Hutchinson’s method [@doshi2023criticalinitializationwidedeep]. [Fig. 2](#fig-vit-grads) (right) shows gradient amplification coefficients estimated from the ViT backward pass on a batch of permutation-invariant token configurations. The observed gradient amplification is slightly larger than the APJN, likely because the gradients lie in a subspace corresponding to larger-than-average Jacobian eigenvalues.

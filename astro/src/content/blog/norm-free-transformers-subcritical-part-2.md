@@ -268,7 +268,7 @@ $$
 Overall, matching the pre-LN gradient amplification behavior requires choosing a smaller $\alpha$ in the Derf model. However, smaller values $\alpha$ in Derf also yields smaller updates to the residual stream. If instead we try to align pre-LN and Derf by matching the magnitude of the residual-stream update, then the gradient amplification in Derf becomes much larger. Concretely, choosing $\alpha$ so that the $q_l$ curves for pre-LN and Derf are as close as possible leads to a large $\alpha$.   
 
 <figure id="fig-vit-p-q" class="wide">
-  <img src="/figures/norm-free-transformers-subcritical-part-2/meanfield_vs_vit.svg" alt="MFT vs ViT: p, q, and p/q." />
+  <img src="/figures/norm-free-transformers-subcritical-part-2/meanfield_vs_vit_qp.svg" alt="MFT vs ViT: p, q, and p/q." />
 </figure>
 
 **Figure 1.** (a) The component-wise variance of the activation vector at a given position, $q^l$, (b) the covariance between components of activation vectors at different positions, $p^l$, and (c) their ratio, $p^l/q^l$. Left: mean-field analysis; right: values estimated from a ViT forward pass on a batch of permutation-invariant token configurations with the same initial value of $p$. The black solid line indicates the pre-LN baseline. Colored lines show Derf variants with varying values of $\alpha$.

@@ -70,7 +70,7 @@ $$
 In this expression, each $h_a$ is a scalar dummy variable rather than a multi-component activation vector – we have simply suppressed the component index $i$. Even if the original activations have zero mean, passing through some nonlinearities (e.g., ReLU) can introduce a non-zero mean $\mathbb{E}\, \phi(h_a)$; however, it is eliminated by the subsequent linear transformation. 
 
 A subsequent linear transformation $W$ with zero mean and variance $\sigma_W^2/d$ (assuming Gaussian weights for simplicity) multiplies the covariance by $\sigma_W^2$. Thus, combining the nonlinearity with the linear transformation yields $\bigl( [\,W\phi(h_1)\,]^i,\; [\,W\phi(h_2)\,]^i \bigr)
-\sim \mathcal{N}\!\left(0,\; \sigma_W^2\,\Sigma^\phi\right)$.
+\sim$ $\mathcal{N}\!\left(0,\; \sigma_W^2\,\Sigma^\phi\right)$.
 
 ### Setup
 <span id="mft-setup"></span>
